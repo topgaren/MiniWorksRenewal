@@ -1,10 +1,18 @@
 package com.works.entity;
 
+import com.works.dto.UserResponseDTO;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class User {
 
     private int userId;
@@ -25,5 +33,11 @@ public class User {
 
     private String corporationAddress;
 
-    private LocalDateTime hireDate;
+    private Date hireDate;
+
+    public UserResponseDTO toUserDTO() {
+
+        return new UserResponseDTO(domainId, account, userName, userExternalKey, authentication,
+                cellPhone, email, corporationAddress, hireDate);
+    }
 }

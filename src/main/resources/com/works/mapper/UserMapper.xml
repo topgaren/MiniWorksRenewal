@@ -23,4 +23,23 @@
         WHERE domain_id = #{domainId};
     </select>
 
+    <select id="getUserByExternalKey" resultMap="user">
+        SELECT *
+        FROM User
+        WHERE domain_id = #{domainId} AND user_external_key = #{userExternalKey};
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO User(domain_id, account, user_name, user_external_key, authentication,
+            cell_phone, email, corporation_address, hire_date)
+        VALUES(#{domainId}, #{account}, #{userName}, #{userExternalKey}, #{authentication},
+            #{cellPhone}, #{email}, #{corporationAddress}, #{hireDate});
+    </insert>
+
+    <delete id="deleteUser">
+        DELETE
+        FROM User
+        WHERE domain_id = #{domainId} AND user_external_key = #{userExternalKey};
+    </delete>
+
 </mapper>

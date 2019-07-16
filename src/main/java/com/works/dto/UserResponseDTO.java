@@ -1,7 +1,5 @@
 package com.works.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.works.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserRequestDTO {
+public class UserResponseDTO {
 
     private int domainId;
 
@@ -33,9 +31,4 @@ public class UserRequestDTO {
     private String corporationAddress;
 
     private Date hireDate;
-
-    public User toUserEntity() {
-        return new User(0, domainId, account, userName, userExternalKey, authentication,
-                cellPhone, email, corporationAddress, hireDate);
-    }
 }
