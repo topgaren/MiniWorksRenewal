@@ -33,6 +33,13 @@ public interface UserMapper {
     void insertUser(User user);
 
     /**
+     * 구성원 정보를 수정한다.
+     *
+     * @param  user 수정할 구성원 정보를 저장하고 있는 User 객체
+     */
+    void updateUser(User user);
+
+    /**
      * 구성원 정보를 삭제한다.
      *
      * @param   domainId 삭제할 구성원이 속한 도메인의 아이디.

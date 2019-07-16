@@ -36,6 +36,13 @@
             #{cellPhone}, #{email}, #{corporationAddress}, #{hireDate});
     </insert>
 
+    <update id="updateUser" parameterType="com.works.entity.User">
+        UPDATE User
+        SET account = #{account}, user_name = #{userName}, authentication = #{authentication}, cell_phone = #{cellPhone},
+            email = #{email}, corporation_address = #{corporationAddress}, hire_date = #{hireDate}
+        WHERE domain_id = #{domainId} AND user_external_key = #{userExternalKey};
+    </update>
+
     <delete id="deleteUser">
         DELETE
         FROM User

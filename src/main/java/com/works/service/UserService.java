@@ -1,6 +1,7 @@
 package com.works.service;
 
-import com.works.dto.UserRequestDTO;
+import com.works.dto.UserRequestCreateDTO;
+import com.works.dto.UserRequestUpdateDTO;
 import com.works.dto.UserResponseDTO;
 import com.works.entity.User;
 import com.works.mapper.UserMapper;
@@ -19,23 +20,36 @@ public class UserService {
         return resultUser.toUserDTO();
     }
 
-    public void insertUserDTO(UserRequestDTO userRequestDTO) {
+    public void insertUserDTO(int domainId, UserRequestCreateDTO userRequestDTO) {
 
-        userMapper.insertUser(userRequestDTO.toUserEntity());
+        User userRequestEntity = userRequestDTO.toUserEntity();
+        userRequestEntity.setDomainId(domainId);
+
+        userMapper.insertUser(userRequestEntity);
     }
 
-    public void updateAllUserDTO(UserRequestDTO userRequestDTO) {
+    public void updateAllUserDTO(UserRequestUpdateDTO userRequestDTO) {
 
+        // 일단 domainId와 externalKey는 업데이트 하지 않는다는 가정을 한다.
+        userMapper.updateUser(userRequestDTO.toUserEntity());
     }
 
-    public void updatePartUserDTO(UserRequestDTO userRequestDTO) {
+    public void updatePartUserDTO(UserRequestUpdateDTO userRequestDTO) {
 
+        // 수정할 정보를 담고 있는 User 객체
         User requestUserEntity = userRequestDTO.toUserEntity();
 
         int domainId = requestUserEntity.getDomainId();
         String userExternalKey = requestUserEntity.getUserExternalKey();
 
+        // 원본 객체를 불러온다.
         User modifiedUserEntity = userMapper.getUserByExternalKey(domainId, userExternalKey);
+
+        // 원본 객체를 수정할 정보를 담고 있는 객체의 정보로 업데이트 한다.
+        modifiedUserEntity.updateUser(requestUserEntity);
+
+        // 수정한 객체를 DB에 전달한다.
+        userMapper.updateUser(modifiedUserEntity);
     }
 
     public void deleteUser(int domainId, String userExternalKey) {
