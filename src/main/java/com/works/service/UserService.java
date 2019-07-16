@@ -3,7 +3,7 @@ package com.works.service;
 import com.works.dto.UserRequestCreateDTO;
 import com.works.dto.UserRequestUpdateDTO;
 import com.works.dto.UserResponseDTO;
-import com.works.entity.User;
+import com.works.entity.UserEntity;
 import com.works.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,13 +16,13 @@ public class UserService {
 
     public UserResponseDTO getUserDTO(int domainId, String userExternalKey) {
 
-        User resultUser = userMapper.getUserByExternalKey(domainId, userExternalKey);
-        return resultUser.toUserDTO();
+        UserEntity resultUserEntity = userMapper.getUserByExternalKey(domainId, userExternalKey);
+        return resultUserEntity.toUserDTO();
     }
 
     public void insertUserDTO(int domainId, UserRequestCreateDTO userRequestDTO) {
 
-        User userRequestEntity = userRequestDTO.toUserEntity();
+        UserEntity userRequestEntity = userRequestDTO.toUserEntity();
         userRequestEntity.setDomainId(domainId);
 
         userMapper.insertUser(userRequestEntity);
@@ -37,13 +37,13 @@ public class UserService {
     public void updatePartUserDTO(UserRequestUpdateDTO userRequestDTO) {
 
         // 수정할 정보를 담고 있는 User 객체
-        User requestUserEntity = userRequestDTO.toUserEntity();
+        UserEntity requestUserEntity = userRequestDTO.toUserEntity();
 
         int domainId = requestUserEntity.getDomainId();
         String userExternalKey = requestUserEntity.getUserExternalKey();
 
         // 원본 객체를 불러온다.
-        User modifiedUserEntity = userMapper.getUserByExternalKey(domainId, userExternalKey);
+        UserEntity modifiedUserEntity = userMapper.getUserByExternalKey(domainId, userExternalKey);
 
         // 원본 객체를 수정할 정보를 담고 있는 객체의 정보로 업데이트 한다.
         modifiedUserEntity.updateUser(requestUserEntity);

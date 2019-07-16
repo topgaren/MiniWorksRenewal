@@ -3,7 +3,6 @@ package com.works.controller;
 import com.works.dto.UserRequestCreateDTO;
 import com.works.dto.UserRequestUpdateDTO;
 import com.works.dto.UserResponseDTO;
-import com.works.entity.User;
 import com.works.mapper.UserMapper;
 import com.works.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

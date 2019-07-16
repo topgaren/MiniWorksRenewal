@@ -1,7 +1,6 @@
 package com.works.mapper;
 
-import com.works.dto.UserResponseDTO;
-import com.works.entity.User;
+import com.works.entity.UserEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,21 +22,21 @@ public interface UserMapper {
      * @param   userExternalKey 조회할 구성원의 외부키
      * @return  조회한 구성원 정보.
      */
-    User getUserByExternalKey(@Param("domainId") int domainId, @Param("userExternalKey") String userExternalKey);
+    UserEntity getUserByExternalKey(@Param("domainId") int domainId, @Param("userExternalKey") String userExternalKey);
 
     /**
      * 구성원 정보를 새로 추가한다.
      *
      * @param   user 추가할 구성원 정보를 저장하고 있는 User 객체
      */
-    void insertUser(User user);
+    void insertUser(UserEntity user);
 
     /**
      * 구성원 정보를 수정한다.
      *
      * @param  user 수정할 구성원 정보를 저장하고 있는 User 객체
      */
-    void updateUser(User user);
+    void updateUser(UserEntity user);
 
     /**
      * 구성원 정보를 삭제한다.

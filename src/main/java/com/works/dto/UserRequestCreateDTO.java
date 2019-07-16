@@ -1,6 +1,6 @@
 package com.works.dto;
 
-import com.works.entity.User;
+import com.works.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,9 +32,9 @@ public class UserRequestCreateDTO {
 
     private Date hireDate;
 
-    public User toUserEntity() {
+    public UserEntity toUserEntity() {
         // userId와 domainId는 디폴트 값(0)으로 초기화.
-        return new User(0, domainId, account, userName, userExternalKey, authentication,
+        return new UserEntity(0, domainId, account, userName, userExternalKey, authentication,
                 cellPhone, email, corporationAddress, hireDate);
     }
 }
