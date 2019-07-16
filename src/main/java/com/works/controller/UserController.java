@@ -42,9 +42,10 @@ public class UserController {
     public void insertUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
                               @RequestBody UserRequestCreateDTO userRequestDTO) {
 
+        userRequestDTO.setDomainId(domainId);
         userRequestDTO.setUserExternalKey(userExternalKey);
 
-        userService.insertUserDTO(domainId, userRequestDTO);
+        userService.insertUserDTO(userRequestDTO);
     }
 
     /**

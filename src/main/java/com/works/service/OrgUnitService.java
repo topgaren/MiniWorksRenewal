@@ -1,5 +1,6 @@
 package com.works.service;
 
+import com.works.dto.OrgUnitRequestCreateDTO;
 import com.works.dto.OrgUnitResponseDTO;
 import com.works.entity.OrgUnitEntity;
 import com.works.mapper.OrgUnitMapper;
@@ -18,4 +19,14 @@ public class OrgUnitService {
         return resultOrgUnitEntity.toOrgUnitDTO();
     }
 
+    public void insertOrgUnitDTO(OrgUnitRequestCreateDTO orgUnitRequestDTO) {
+
+        OrgUnitEntity orgUnitEntity = orgUnitRequestDTO.toOrgUnitEntity();
+        orgUnitMapper.insertOrgUnit(orgUnitEntity);
+    }
+
+    public void deleteOrgUnit(int domainId, String orgExternalKey) {
+
+        orgUnitMapper.deleteOrgUnit(domainId, orgExternalKey);
+    }
 }

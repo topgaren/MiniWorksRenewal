@@ -20,11 +20,9 @@ public class UserService {
         return resultUserEntity.toUserDTO();
     }
 
-    public void insertUserDTO(int domainId, UserRequestCreateDTO userRequestDTO) {
+    public void insertUserDTO(UserRequestCreateDTO userRequestDTO) {
 
         UserEntity userRequestEntity = userRequestDTO.toUserEntity();
-        userRequestEntity.setDomainId(domainId);
-
         userMapper.insertUser(userRequestEntity);
     }
 

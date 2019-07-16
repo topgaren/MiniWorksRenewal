@@ -20,4 +20,17 @@
         FROM OrgUnit
         WHERE domain_id = #{domainId} AND org_external_key = #{orgExternalKey};
     </select>
+
+    <insert id="insertOrgUnit" parameterType="com.works.entity.OrgUnitEntity">
+        INSERT INTO OrgUnit(domain_id, org_name, org_external_key, depth,
+            sibling_order, parent_id, org_description)
+        VALUES(#{domainId}, #{orgName}, #{orgExternalKey}, #{depth},
+            #{siblingOrder}, #{parentId}, #{orgDescription});
+    </insert>
+
+    <delete id="deleteOrgUnit">
+        DELETE FROM OrgUnit
+        WHERE domain_id = #{domainId} AND org_external_key = #{orgExternalKey};
+    </delete>
+
 </mapper>
