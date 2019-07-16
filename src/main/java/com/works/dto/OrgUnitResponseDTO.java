@@ -1,6 +1,5 @@
-package com.works.entity;
+package com.works.dto;
 
-import com.works.dto.OrgUnitResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class OrgUnitEntity {
+public class OrgUnitResponseDTO {
 
     private int orgId;
 
@@ -27,9 +26,4 @@ public class OrgUnitEntity {
     private int parentId;
 
     private String orgDescription;
-
-    public OrgUnitResponseDTO toOrgUnitDTO() {
-        return new OrgUnitResponseDTO(orgId, domainId, orgName, orgExternalKey,
-                depth, siblingOrder, parentId, orgDescription);
-    }
 }

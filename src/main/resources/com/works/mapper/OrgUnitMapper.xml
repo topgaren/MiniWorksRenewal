@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.works.mapper.OrgUnitMapper">
+    <resultMap id="orgUnit" type="com.works.entity.OrgUnitEntity">
+        <result property="orgId" column="org_id" />
+        <result property="domainId" column="domain_id" />
+        <result property="orgName" column="org_name" />
+        <result property="orgExternalKey" column="org_external_key" />
+        <result property="depth" column="depth" />
+        <result property="siblingOrder" column="sibling_order" />
+        <result property="parentId" column="parent_id" />
+        <result property="orgDescription" column="org_description" />
+    </resultMap>
+
+    <select id="getOrgUnitByExternalKey" resultMap="orgUnit">
+        SELECT *
+        FROM OrgUnit
+        WHERE domain_id = #{domainId} AND org_external_key = #{orgExternalKey};
+    </select>
+</mapper>
