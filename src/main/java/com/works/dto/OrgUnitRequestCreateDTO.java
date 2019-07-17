@@ -23,7 +23,7 @@ public class OrgUnitRequestCreateDTO {
     private String orgDescription;
 
     public OrgUnitEntity toOrgUnitEntity() {
-        return new OrgUnitEntity(0, 0, orgName, null, 0,
+        return new OrgUnitEntity(0, 0, orgName, null, 1,
                 0, 0, orgDescription);
     }
 }

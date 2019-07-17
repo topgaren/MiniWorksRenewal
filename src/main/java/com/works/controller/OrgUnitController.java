@@ -43,6 +43,7 @@ public class OrgUnitController {
         orgUnitRequestEntity.setDomainId(domainId);
         orgUnitRequestEntity.setOrgExternalKey(orgExternalKey);
 
+        // 부모 조직 외부키에 관한 예외 처리는 어디서 할까
         String parentOrgUnitExternalKey = orgUnitRequestDTO.getParentOrgExternalKey();
 
         orgUnitService.insertOrgUnit(parentOrgUnitExternalKey, orgUnitRequestEntity);
