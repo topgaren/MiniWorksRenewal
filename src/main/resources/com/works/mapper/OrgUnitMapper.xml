@@ -33,4 +33,10 @@
         WHERE domain_id = #{domainId} AND org_external_key = #{orgExternalKey};
     </delete>
 
+    <select id="countChildById" resultType="int">
+        SELECT COUNT(*)
+        FROM OrgUnit
+        WHERE domain_id = #{domainId} AND parent_id = #{parentId};
+    </select>
+
 </mapper>

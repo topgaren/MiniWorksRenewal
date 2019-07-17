@@ -2,6 +2,7 @@ package com.works.controller;
 
 import com.works.dto.OrgUnitRequestCreateDTO;
 import com.works.dto.OrgUnitResponseDTO;
+import com.works.entity.OrgUnitEntity;
 import com.works.service.OrgUnitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,13 +35,17 @@ public class OrgUnitController {
      * @param   orgUnitRequestDTO 추가할 조직 정보를 담고 있는 객체.
      */
     @PostMapping("/domains/{domainId}/orgs/{orgExternalKey}")
-    public void insertOrgUnitDTO(@PathVariable int domainId, @PathVariable String orgExternalKey,
+    public void insertOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey,
                                  @RequestBody OrgUnitRequestCreateDTO orgUnitRequestDTO) {
 
-        orgUnitRequestDTO.setDomainId(domainId);
-        orgUnitRequestDTO.setOrgExternalKey(orgExternalKey);
+        // 도메인 아이디와 외부키에 관한 예외 처리 코드 추가할 것.
+        OrgUnitEntity orgUnitRequestEntity = orgUnitRequestDTO.toOrgUnitEntity();
+        orgUnitRequestEntity.setDomainId(domainId);
+        orgUnitRequestEntity.setOrgExternalKey(orgExternalKey);
 
-        orgUnitService.insertOrgUnitDTO(orgUnitRequestDTO);
+        String parentOrgUnitExternalKey = orgUnitRequestDTO.getParentOrgExternalKey();
+
+        orgUnitService.insertOrgUnit(parentOrgUnitExternalKey, orgUnitRequestEntity);
     }
 
     /**
