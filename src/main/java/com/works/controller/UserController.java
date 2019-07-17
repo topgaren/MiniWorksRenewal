@@ -3,6 +3,7 @@ package com.works.controller;
 import com.works.dto.UserRequestCreateDTO;
 import com.works.dto.UserRequestUpdateDTO;
 import com.works.dto.UserResponseDTO;
+import com.works.entity.UserEntity;
 import com.works.mapper.UserMapper;
 import com.works.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +43,15 @@ public class UserController {
     public void insertUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
                               @RequestBody UserRequestCreateDTO userRequestDTO) {
 
-        userRequestDTO.setDomainId(domainId);
-        userRequestDTO.setUserExternalKey(userExternalKey);
+        // domainId에 해당하는 도메인이 존재하지 않는 경우
+        // 같은 도메인에 중복되는 외부키가 존재하는 경우
+        // account의 도메인 파트와 domainId에 해당하는 도메인 주소가 일치하지 않는 경우
 
-        userService.insertUserDTO(userRequestDTO);
+        UserEntity userRequestEntity = userRequestDTO.toUserEntity();
+        userRequestEntity.setDomainId(domainId);
+        userRequestEntity.setUserExternalKey(userExternalKey);
+
+        userService.insertUserDTO(userRequestEntity);
     }
 
     /**
@@ -59,10 +65,11 @@ public class UserController {
     public void updateAllUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
                                  @RequestBody UserRequestUpdateDTO userRequestDTO) {
 
-        userRequestDTO.setDomainId(domainId);
-        userRequestDTO.setUserExternalKey(userExternalKey);
+        UserEntity userRequestEntity = userRequestDTO.toUserEntity();
+        userRequestEntity.setDomainId(domainId);
+        userRequestEntity.setUserExternalKey(userExternalKey);
 
-        userService.updateAllUserDTO(userRequestDTO);
+        userService.updateAllUserDTO(userRequestEntity);
 
     }
 
@@ -77,10 +84,11 @@ public class UserController {
     public void updatePartUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
                                   @RequestBody UserRequestUpdateDTO userRequestDTO) {
 
-        userRequestDTO.setDomainId(domainId);
-        userRequestDTO.setUserExternalKey(userExternalKey);
+        UserEntity userRequestEntity = userRequestDTO.toUserEntity();
+        userRequestEntity.setDomainId(domainId);
+        userRequestEntity.setUserExternalKey(userExternalKey);
 
-        userService.updatePartUserDTO(userRequestDTO);
+        userService.updatePartUserDTO(userRequestEntity);
     }
 
     /**
