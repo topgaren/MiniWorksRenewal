@@ -28,6 +28,13 @@
             #{siblingOrder}, #{parentId}, #{orgDescription});
     </insert>
 
+    <update id="updateOrgUnit" parameterType="com.works.entity.OrgUnitEntity">
+        UPDATE OrgUnit
+        SET org_name = #{orgName}, depth = #{depth}, sibling_order = #{siblingOrder},
+            parent_id = #{parentId}, org_description = #{orgDescription}
+        WHERE domain_id = #{domainId} AND org_external_key = #{orgExternalKey};
+    </update>
+
     <delete id="deleteOrgUnit">
         DELETE FROM OrgUnit
         WHERE domain_id = #{domainId} AND org_external_key = #{orgExternalKey};
@@ -37,6 +44,13 @@
         SELECT COUNT(*)
         FROM OrgUnit
         WHERE domain_id = #{domainId} AND parent_id = #{parentId};
+    </select>
+    
+    <select id="getChildrenById" resultMap="orgUnit">
+        SELECT *
+        FROM OrgUnit
+        WHERE domain_id = #{domainId} AND parent_id = #{parentId}
+        ORDER BY sibling_order ASC;
     </select>
 
 </mapper>

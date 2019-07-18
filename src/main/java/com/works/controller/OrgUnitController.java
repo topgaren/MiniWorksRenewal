@@ -1,6 +1,8 @@
 package com.works.controller;
 
 import com.works.dto.OrgUnitRequestCreateDTO;
+import com.works.dto.OrgUnitRequestMoveDTO;
+import com.works.dto.OrgUnitRequestUpdateDTO;
 import com.works.dto.OrgUnitResponseDTO;
 import com.works.entity.OrgUnitEntity;
 import com.works.service.OrgUnitService;
@@ -36,7 +38,7 @@ public class OrgUnitController {
      */
     @PostMapping("/domains/{domainId}/orgs/{orgExternalKey}")
     public void insertOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey,
-                                 @RequestBody OrgUnitRequestCreateDTO orgUnitRequestDTO) {
+                              @RequestBody OrgUnitRequestCreateDTO orgUnitRequestDTO) {
 
         // 도메인 아이디와 외부키에 관한 예외 처리 코드 추가할 것.
         OrgUnitEntity orgUnitRequestEntity = orgUnitRequestDTO.toOrgUnitEntity();
@@ -47,6 +49,61 @@ public class OrgUnitController {
         String parentOrgUnitExternalKey = orgUnitRequestDTO.getParentOrgExternalKey();
 
         orgUnitService.insertOrgUnit(parentOrgUnitExternalKey, orgUnitRequestEntity);
+    }
+
+    /**
+     * 조직 정보 전체 수정.
+     * 전달되지 않은 정보는 지워진다.
+     *
+     * @param   domainId 조직이 속한 도메인 아이디.
+     * @param   orgExternalKey 조직의 외부키.
+     * @param   orgUnitRequestDTO 수정 정보를 담고 있는 객체.
+     */
+    @PutMapping("/domains/{domainId}/orgs/{orgExternalKey}")
+    public void updateAllOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey,
+                                 @RequestBody OrgUnitRequestUpdateDTO orgUnitRequestDTO) {
+
+        OrgUnitEntity requestOrgUnitEntity = orgUnitRequestDTO.toOrgUnitEntity();
+        requestOrgUnitEntity.setDomainId(domainId);
+        requestOrgUnitEntity.setOrgExternalKey(orgExternalKey);
+
+        orgUnitService.updateAllOrgUnit(requestOrgUnitEntity);
+    }
+
+    /**
+     * 조직 정보 부분 수정.
+     * 전달 되지 않은 정보는 수정하지 않는다.
+     *
+     * @param   domainId 조직이 속한 도메인 아이디.
+     * @param   orgExternalKey 조직의 외부키.
+     * @param   orgUnitRequestDTO 수정 정보를 담고 있는 객체.
+     */
+    @PatchMapping("/domains/{domainId}/orgs/{orgExternalKey}")
+    public void updatePartOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey,
+                              @RequestBody OrgUnitRequestUpdateDTO orgUnitRequestDTO) {
+
+        OrgUnitEntity requestOrgUnitEntity = orgUnitRequestDTO.toOrgUnitEntity();
+        requestOrgUnitEntity.setDomainId(domainId);
+        requestOrgUnitEntity.setOrgExternalKey(orgExternalKey);
+
+        orgUnitService.updatePartOrgUnit(requestOrgUnitEntity);
+    }
+
+    /**
+     * 조직 이동.
+     *
+     * @param   domainId 조직이 속한 도메인 아이디.
+     * @param   orgExternalKey 조직의 외부키.
+     * @param   orgUnitRequestDTO 이동 정보를 담고 있는 객체
+     */
+    @PatchMapping("/domains/{domainId}/orgs/{orgExternalKey}/move")
+    public void moveOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey,
+                            @RequestBody OrgUnitRequestMoveDTO orgUnitRequestDTO) {
+
+        String parentOrgExternalKey = orgUnitRequestDTO.getParentOrgExternalKey();
+        String prevOrgExternalKey = orgUnitRequestDTO.getPrevOrgExternalKey();
+
+        orgUnitService.moveOrgUnit(domainId, orgExternalKey, parentOrgExternalKey, prevOrgExternalKey);
     }
 
     /**

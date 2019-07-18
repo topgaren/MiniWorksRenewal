@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,5 +32,12 @@ public class OrgUnitEntity {
     public OrgUnitResponseDTO toOrgUnitDTO() {
         return new OrgUnitResponseDTO(orgId, domainId, orgName, orgExternalKey,
                 depth, siblingOrder, parentId, orgDescription);
+    }
+
+    public void updateOrgUnit(OrgUnitEntity addedOrgUnitEntity) {
+
+        orgName = StringUtils.isEmpty(addedOrgUnitEntity.getOrgName()) ? orgName : addedOrgUnitEntity.getOrgName();
+        orgExternalKey = StringUtils.isEmpty(addedOrgUnitEntity.getOrgExternalKey()) ? orgExternalKey : addedOrgUnitEntity.getOrgExternalKey();
+        orgDescription = StringUtils.isEmpty(addedOrgUnitEntity.getOrgDescription()) ? orgDescription : addedOrgUnitEntity.getOrgDescription();
     }
 }
