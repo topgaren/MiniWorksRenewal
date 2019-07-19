@@ -6,6 +6,10 @@ import java.util.List;
 import com.works.dto.OrgUnitRequestCreateDTO;
 import com.works.dto.OrgUnitResponseDTO;
 import com.works.entity.OrgUnitEntity;
+import com.works.exception.BadRequestException;
+import com.works.exception.ConflictException;
+import com.works.exception.NullException;
+import com.works.mapper.DomainMapper;
 import com.works.mapper.OrgUnitMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,23 +19,67 @@ import org.springframework.util.StringUtils;
 public class OrgUnitService {
 
     @Autowired
+    DomainMapper domainMapper;
+
+    @Autowired
     OrgUnitMapper orgUnitMapper;
 
-    public OrgUnitResponseDTO getOrgUnitDTO(int domainId, String orgExternalKey) {
+    /**
+     * 조직 정보를 조회한다.
+     *
+     * @param domainId : 조직이 속한 도메인 아이디.
+     * @param orgExternalKey : 조직의 외부키.
+     * @return : 조회한 조직 정보를 담은 객체.
+     * @throws Exception
+     */
+    public OrgUnitResponseDTO getOrgUnitDTO(int domainId, String orgExternalKey) throws Exception {
+
+        // 존재하지 않는 도메인을 사용하려는 경우 : BadRequestException 예외 발생.
+        if(domainMapper.getDomainCount(domainId) == 0) {
+            throw new BadRequestException("domainId에 해당하는 도메인이 존재하지 않습니다.");
+        }
+
+        // 도메인 내 존재하지 않는 외부키를 사용하려는 경우 : NullException 예외 발생.
+        if(orgUnitMapper.getOrgUnitExist(domainId, orgExternalKey) == 0) {
+            throw new NullException("외부키에 해당하는 조직이 존재하지 않습니다.");
+        }
 
         OrgUnitEntity resultOrgUnitEntity = orgUnitMapper.getOrgUnitByExternalKey(domainId, orgExternalKey);
         return resultOrgUnitEntity.toOrgUnitDTO();
     }
 
-    public void insertOrgUnit(String parnetOrgUnitExternalKey, OrgUnitEntity orgUnitRequestEntity) {
+    /**
+     * 조직 정보를 추가한다.
+     *
+     * @param parnetOrgUnitExternalKey : 부모 조직으로 설정할 조직의 외부키.
+     * @param orgUnitRequestEntity : 추가 조직 정보를 담고 있는 객체.
+     * @throws Exception
+     */
+    public void insertOrgUnit(String parnetOrgUnitExternalKey, OrgUnitEntity orgUnitRequestEntity) throws Exception {
 
         int domainId = orgUnitRequestEntity.getDomainId();
+        String orgExternalKey = orgUnitRequestEntity.getOrgExternalKey();
+
+        // 존재하지 않는 도메인을 사용하려는 경우 : BadRequestException 예외 발생.
+        if(domainMapper.getDomainCount(domainId) == 0) {
+            throw new BadRequestException("domainId에 해당하는 도메인이 존재하지 않습니다.");
+        }
+
+        // 도메인 내 중복되는 외부키를 사용하려는 경우 : ConflictException 예외 발생.
+        if(orgUnitMapper.getOrgUnitExist(domainId, orgExternalKey) == 1) {
+            throw new ConflictException("도메인 내 이미 사용중인 외부키가 존재합니다.");
+        }
 
         // 부모 조직을 특별히 지정하지 않은 경우 depth는 1로, parentId는 0으로 설정된다.
         // (참조 : OrgUnitRequestCreateDTO.toOrgUnitEntity())
 
         // 특정 조직을 부모 조직으로 지정한 경우 depth와 parentId를 따로 설정한다.
         if(!StringUtils.isEmpty(parnetOrgUnitExternalKey)) {
+
+            // 도메인 내 존재하지 않는 부모 조직의 외부키를 사용하려는 경우 : NullException 예외 발생.
+            if(orgUnitMapper.getOrgUnitExist(domainId, parnetOrgUnitExternalKey) == 0) {
+                throw new NullException("외부키에 해당하는 부모 조직이 존재하지 않습니다.");
+            }
 
             // 부모 조직을 얻어온다.
             OrgUnitEntity parentOrgUnitEntity = orgUnitMapper.getOrgUnitByExternalKey(domainId, parnetOrgUnitExternalKey);
@@ -52,6 +100,13 @@ public class OrgUnitService {
         orgUnitMapper.insertOrgUnit(orgUnitRequestEntity);
     }
 
+    /**
+     * 모든 후손 조직 정보를 조회한다.
+     *
+     * @param domainId : 조직이 속한 도메인 아이디.
+     * @param parentId : 후손 조직의 최상위 부모 조직의 아이디.
+     * @return : parentId를 아이디로 갖는 조직의 모든 후손 조직 정보.
+     */
     public List<OrgUnitEntity> getDescendantById(int domainId, int parentId) {
 
         // 후손 조직 객체를 저장할 리스트
@@ -69,10 +124,27 @@ public class OrgUnitService {
         return descendantOrgUnitEntities;
     }
 
-    public void updateAllOrgUnit(OrgUnitEntity requestOrgUnitEntity) {
+    /**
+     * 조직 정보를 수정한다.
+     * 전달하지 않은 정보는 삭제한다.
+     *
+     * @param requestOrgUnitEntity : 수정할 정보를 담고 있는 조직 객체.
+     * @throws Exception
+     */
+    public void updateAllOrgUnit(OrgUnitEntity requestOrgUnitEntity) throws Exception {
 
         int domainId = requestOrgUnitEntity.getDomainId();
         String orgExternalKey = requestOrgUnitEntity.getOrgExternalKey();
+
+        // 존재하지 않는 도메인을 사용하려는 경우 : BadRequestException 예외 발생.
+        if(domainMapper.getDomainCount(domainId) == 0) {
+            throw new BadRequestException("domainId에 해당하는 도메인이 존재하지 않습니다.");
+        }
+
+        // 도메인 내 존재하지 않는 조직을 수정하려 하는 경우 : NullException 예외 발생.
+        if(orgUnitMapper.getOrgUnitExist(domainId, orgExternalKey) == 0) {
+            throw new NullException("외부키에 해당하는 조직이 존재하지 않습니다.");
+        }
 
         // 원본 OrgUnit 객체를 얻어온다.
         OrgUnitEntity originalOrgUnitEntity = orgUnitMapper.getOrgUnitByExternalKey(domainId, orgExternalKey);
@@ -86,10 +158,27 @@ public class OrgUnitService {
         orgUnitMapper.updateOrgUnit(requestOrgUnitEntity);
     }
 
-    public void updatePartOrgUnit(OrgUnitEntity requestOrgUnitEntity) {
+    /**
+     * 조직 정보를 수정한다.
+     * 전달하지 않은 정보는 수정하지 않는다.
+     *
+     * @param requestOrgUnitEntity : 수정할 정보를 담고 있는 조직 객체.
+     * @throws Exception
+     */
+    public void updatePartOrgUnit(OrgUnitEntity requestOrgUnitEntity) throws Exception {
 
         int domainId = requestOrgUnitEntity.getDomainId();
         String orgExternalKey = requestOrgUnitEntity.getOrgExternalKey();
+
+        // 존재하지 않는 도메인을 사용하려는 경우 : BadRequestException 예외 발생.
+        if(domainMapper.getDomainCount(domainId) == 0) {
+            throw new BadRequestException("domainId에 해당하는 도메인이 존재하지 않습니다.");
+        }
+
+        // 도메인 내 존재하지 않는 조직을 수정하려 하는 경우 : NullException 예외 발생.
+        if(orgUnitMapper.getOrgUnitExist(domainId, orgExternalKey) == 0) {
+            throw new NullException("외부키에 해당하는 조직이 존재하지 않습니다.");
+        }
 
         // 원본 OrgUnit 객체를 얻어온다.
         OrgUnitEntity originalOrgUnitEntity = orgUnitMapper.getOrgUnitByExternalKey(domainId, orgExternalKey);
@@ -100,23 +189,65 @@ public class OrgUnitService {
         orgUnitMapper.updateOrgUnit(updatedOrgUnitEntity);
     }
 
-    public void moveOrgUnit(int domainId, String orgExternalKey, String parentOrgExternalKey, String prevOrgExternalKey) {
+    /**
+     * 조직을 이동시킨다.
+     *
+     * @param domainId : 조직이 속한 도메인 아이디.
+     * @param orgExternalKey : 이동 대상 조직의 외부키.
+     * @param parentOrgExternalKey : 새로 지정할 부모 조직의 외부키.
+     * @param prevOrgExternalKey : 동일 부모를 갖는 형제 조직 중 이동 대상 바로 직전에 위치하는 형제 조직의 외부키.
+     * @throws Exception
+     */
+    public void moveOrgUnit(int domainId, String orgExternalKey, String parentOrgExternalKey, String prevOrgExternalKey) throws Exception {
 
-        // 아이디와 외부키에 대한 예외 처리 코드 추가할 것.
+        // 존재하지 않는 도메인을 사용하려는 경우 : BadRequestException 예외 발생.
+        if(domainMapper.getDomainCount(domainId) == 0) {
+            throw new BadRequestException("domainId에 해당하는 도메인이 존재하지 않습니다.");
+        }
 
+        // 도메인 내 존재하지 않는 조직을 이동하려 하는 경우 : NullException 예외 발생.
+        if(orgUnitMapper.getOrgUnitExist(domainId, orgExternalKey) == 0) {
+            throw new NullException("외부키에 해당하는 이동 대상 조직이 존재하지 않습니다.");
+        }
 
-        // 이동 대상, 이동 후 부모, 이동 후 바로 앞 형제 조직 객체를 모두 얻어온다.
+        // 이동 대상 조직 객체를 얻어온다.
         OrgUnitEntity movingOrgUnitEntity = orgUnitMapper.getOrgUnitByExternalKey(domainId, orgExternalKey);
+
+        // 도메인 내 존재하지 않는 조직을 부모로 지정하려는 경우 : NullException 예외 발생.
+        if(!StringUtils.isEmpty(parentOrgExternalKey) &&
+                orgUnitMapper.getOrgUnitExist(domainId, parentOrgExternalKey) == 0) {
+            throw new NullException("외부키에 해당하는 부모 조직이 존재하지 않습니다.");
+        }
+
+        // 도메인 내 존재하지 않는 조직을 형제로 지정하려는 경우 : NullException 예외 발생.
+        if(!StringUtils.isEmpty(prevOrgExternalKey) &&
+                orgUnitMapper.getOrgUnitExist(domainId, prevOrgExternalKey) == 0) {
+            throw new NullException("외부키에 해당하는 형제 조직이 존재하지 않습니다.");
+        }
+
+        // 부모 조직과 형제 조직 객체를 얻어온다.
         OrgUnitEntity newParentOrgUnitEntity = StringUtils.isEmpty(parentOrgExternalKey) ? new OrgUnitEntity()
                 : orgUnitMapper.getOrgUnitByExternalKey(domainId, parentOrgExternalKey);
         OrgUnitEntity newPrevOrgUnitEntity = StringUtils.isEmpty(prevOrgExternalKey) ? new OrgUnitEntity()
                 : orgUnitMapper.getOrgUnitByExternalKey(domainId, prevOrgExternalKey);
 
         // 이동 전/후 부모 조직 아이디 및 현재 order, 새로운 직전 형제의 order 등을 얻는다.
-        int currentParentId = movingOrgUnitEntity.getParentId();
-        int newParentId = newParentOrgUnitEntity.getOrgId();
-        int currentSiblingOrder = movingOrgUnitEntity.getSiblingOrder();
-        int newPrevSiblingOrder = newPrevOrgUnitEntity.getSiblingOrder();
+        int currentParentId = movingOrgUnitEntity.getParentId(); // 이동 전 부모 조직의 아이디.
+        int newParentId = newParentOrgUnitEntity.getOrgId(); // 이동 후 부모 조직의 아이디.
+        int currentSiblingOrder = movingOrgUnitEntity.getSiblingOrder(); // 이동 전 형제들 간 본인의 순서.
+        int newPrevSiblingOrder = newPrevOrgUnitEntity.getSiblingOrder(); // 새로운 형제 조직으로 지정한 조직의 현재 순서.
+
+        // parentOrgExternalKey와 prevOrgExternalKey에 해당하는 조직이 부모-자식 관계인지 체크
+        List<OrgUnitEntity> childrenOrgUnitEntities = orgUnitMapper.getChildrenById(domainId, newParentId);
+        for(OrgUnitEntity childOrgUnitEntity : childrenOrgUnitEntities) {
+            if(childOrgUnitEntity.getOrgExternalKey().equals(prevOrgExternalKey)) {
+                // prevOrgExternalKey의 자손 조직들 중 prevOrgExternalKey를 갖는 조직이 존재하면 for문 탈출
+                break;
+            }
+
+            // 모든 자손을 조회했는데도 prevOrgExternalKey를 갖는 조직이 없다면 예외
+            throw new BadRequestException("parentOrgExternalKey와 prevOrgExternalKey에 해당하는 조직이 부모-자식 관계를 갖지 않습니다.");
+        }
 
         // 제자리 움직임 체크.
         if(currentParentId == newParentId && currentSiblingOrder - 1 == newPrevSiblingOrder) {
@@ -221,7 +352,24 @@ public class OrgUnitService {
         orgUnitMapper.updateOrgUnit(movingOrgUnitEntity);
     }
 
-    public void deleteOrgUnit(int domainId, String orgExternalKey) {
+    /**
+     * 조직 정보를 삭제한다.
+     *
+     * @param domainId : 조직이 속한 도메인 아이디.
+     * @param orgExternalKey : 조직의 외부키.
+     * @throws Exception
+     */
+    public void deleteOrgUnit(int domainId, String orgExternalKey) throws Exception {
+
+        // 존재하지 않는 도메인을 사용하려는 경우 : BadRequestException 예외 발생.
+        if(domainMapper.getDomainCount(domainId) == 0) {
+            throw new BadRequestException("domainId에 해당하는 도메인이 존재하지 않습니다.");
+        }
+
+        // 존재하지 않는 조직을 삭제하려는 경우 : NullException 예외 발생.
+        if(orgUnitMapper.getOrgUnitExist(domainId, orgExternalKey) == 0) {
+            throw new NullException("외부키에 해당하는 삭제 대상이 존재하지 않습니다.");
+        }
 
         orgUnitMapper.deleteOrgUnit(domainId, orgExternalKey);
     }

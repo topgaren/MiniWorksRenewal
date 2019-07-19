@@ -15,6 +15,12 @@
         <result property="orgDescription" column="org_description" />
     </resultMap>
 
+    <select id="getOrgUnitExist" resultType="int">
+        SELECT COUNT(*)
+        FROM OrgUnit
+        WHERE domain_id = #{domainId} AND org_external_key = #{orgExternalKey};
+    </select>
+
     <select id="getOrgUnitByExternalKey" resultMap="orgUnit">
         SELECT *
         FROM OrgUnit

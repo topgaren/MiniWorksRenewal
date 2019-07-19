@@ -16,9 +16,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    UserMapper userMapper;
-
     /**
      * 구성원 단건 조회.
      *
@@ -42,10 +39,6 @@ public class UserController {
     @PostMapping("/domains/{domainId}/users/{userExternalKey}")
     public void insertUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
                               @RequestBody UserRequestCreateDTO userRequestDTO) throws Exception {
-
-        // domainId에 해당하는 도메인이 존재하지 않는 경우
-        // 같은 도메인에 중복되는 외부키가 존재하는 경우
-        // account의 도메인 파트와 domainId에 해당하는 도메인 주소가 일치하지 않는 경우
 
         UserEntity userRequestEntity = userRequestDTO.toUserEntity();
         userRequestEntity.setDomainId(domainId);

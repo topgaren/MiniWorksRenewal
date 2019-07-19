@@ -61,6 +61,8 @@ public class UserService {
             throw new ConflictException("도메인 내 이미 사용중인 외부키가 존재합니다.");
         }
 
+        // account의 도메인 파트와 domainId에 해당하는 도메인 주소가 일치하지 않는 경우
+
         userMapper.insertUser(userRequestEntity);
     }
 
@@ -69,6 +71,7 @@ public class UserService {
      * 전달하지 않은 정보는 삭제한다.
      *
      * @param userRequestEntity : 수정할 정보를 담고 있는 객체.
+     * @throws Exception
      */
     public void updateAllUserDTO(UserEntity userRequestEntity) throws Exception {
 
@@ -90,6 +93,7 @@ public class UserService {
      * 전달하지 않은 정보는 수정하지 않는다.
      *
      * @param userRequestEntity : 수정할 정보를 담고 있는 객체.
+     * @throws Exception
      */
     public void updatePartUserDTO(UserEntity userRequestEntity) throws Exception {
 
@@ -122,6 +126,7 @@ public class UserService {
      *
      * @param domainId : 구성원이 속한 도메인 아이디.
      * @param userExternalKey : 구성원 외부키.
+     * @throws Exception
      */
     public void deleteUser(int domainId, String userExternalKey) throws Exception {
 
