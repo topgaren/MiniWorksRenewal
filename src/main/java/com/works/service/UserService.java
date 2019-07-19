@@ -1,9 +1,10 @@
 package com.works.service;
 
-import com.works.dto.UserRequestCreateDTO;
-import com.works.dto.UserRequestUpdateDTO;
 import com.works.dto.UserResponseDTO;
 import com.works.entity.UserEntity;
+import com.works.exception.BadRequestException;
+import com.works.exception.ConflictException;
+import com.works.mapper.DomainMapper;
 import com.works.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,27 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     @Autowired
+    DomainMapper domainMapper;
+
+    @Autowired
     UserMapper userMapper;
 
-    public UserResponseDTO getUserDTO(int domainId, String userExternalKey) {
+    public UserResponseDTO getUserDTO(int domainId, String userExternalKey) throws Exception {
 
         UserEntity resultUserEntity = userMapper.getUserByExternalKey(domainId, userExternalKey);
         return resultUserEntity.toUserDTO();
     }
 
-    public void insertUserDTO(UserEntity userRequestEntity) {
+    public void insertUserDTO(UserEntity userRequestEntity) throws Exception {
+        // 존재하지 않는 도메인을 사용하려는 경우 : BadRequestException 예외 발생
+        if(domainMapper.getDomainCount(userRequestEntity.getDomainId()) == 0) {
+            throw new BadRequestException("domainId에 해당하는 도메인이 존재하지 않습니다.");
+        }
+
+        // 도메인 내 중복되는 외부키를 사용하려는 경우 : ConflictException 예외 발생
+        if(userMapper.getUserExist(userRequestEntity.getDomainId(), userRequestEntity.getUserExternalKey()) == 1) {
+            throw new ConflictException("도메인 내 이미 사용중인 외부키가 존재합니다.");
+        }
 
         userMapper.insertUser(userRequestEntity);
     }

@@ -27,7 +27,7 @@ public class UserController {
      * @return  조회한 UserResponseDTO 객체.
      */
     @GetMapping("/domains/{domainId}/users/{userExternalKey}")
-    public UserResponseDTO getUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey) {
+    public UserResponseDTO getUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey) throws Exception {
 
         return userService.getUserDTO(domainId, userExternalKey);
     }
@@ -41,7 +41,7 @@ public class UserController {
      */
     @PostMapping("/domains/{domainId}/users/{userExternalKey}")
     public void insertUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
-                              @RequestBody UserRequestCreateDTO userRequestDTO) {
+                              @RequestBody UserRequestCreateDTO userRequestDTO) throws Exception {
 
         // domainId에 해당하는 도메인이 존재하지 않는 경우
         // 같은 도메인에 중복되는 외부키가 존재하는 경우

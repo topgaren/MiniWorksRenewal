@@ -16,6 +16,15 @@ public interface UserMapper {
     int getUserCount(int domainId);
 
     /**
+     * 전달한 Parameter에 해당하는 구성원이 존재하는지 확인한다.
+     *
+     * @param   domainId 구성원이 속한 도메인 아이디.
+     * @param   userExternalKey 구성원 외부키.
+     * @return  존재하면 1, 없으면 0을 반환한다.
+     */
+    int getUserExist(@Param("domainId") int domainId, @Param("userExternalKey") String userExternalKey);
+
+    /**
      * 구성원 외부키에 해당되는 구성원을 조회한다.
      *
      * @param   domainId 조회할 구성원이 속한 도메인의 아이디.

@@ -23,6 +23,12 @@
         WHERE domain_id = #{domainId};
     </select>
 
+    <select id="getUserExist" resultType="int">
+        SELECT COUNT(*)
+        FROM User
+        WHERE domain_id = #{domainId} AND user_external_key = #{userExternalKey};
+    </select>
+
     <select id="getUserByExternalKey" resultMap="user">
         SELECT *
         FROM User
