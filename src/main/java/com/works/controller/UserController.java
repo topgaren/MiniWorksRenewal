@@ -22,9 +22,9 @@ public class UserController {
     /**
      * 구성원 단건 조회.
      *
-     * @param   domainId 구성원이 속한 도메인 아이디.
-     * @param   userExternalKey 구성원의 외부키.
-     * @return  조회한 UserResponseDTO 객체.
+     * @param domainId : 구성원이 속한 도메인 아이디.
+     * @param userExternalKey : 구성원의 외부키.
+     * @return : 조회한 UserResponseDTO 객체.
      */
     @GetMapping("/domains/{domainId}/users/{userExternalKey}")
     public UserResponseDTO getUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey) throws Exception {
@@ -35,9 +35,9 @@ public class UserController {
     /**
      * 구성원 추가.
      *
-     * @param   domainId 구성원이 속한 도메인 아이디.
-     * @param   userExternalKey 구성원의 외부키.
-     * @param   userRequestDTO 추가할 구성원 객체.
+     * @param domainId : 구성원이 속한 도메인 아이디.
+     * @param userExternalKey : 구성원의 외부키.
+     * @param userRequestDTO : 추가할 구성원 객체.
      */
     @PostMapping("/domains/{domainId}/users/{userExternalKey}")
     public void insertUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
@@ -57,13 +57,13 @@ public class UserController {
     /**
      * 구성원 정보 전체 수정.
      *
-     * @param   domainId 구성원이 속한 도메인 아이디.
-     * @param   userExternalKey 구성원의 외부키.
-     * @param   userRequestDTO 구성원 수정 정보를 갖고 있는 객체.
+     * @param domainId : 구성원이 속한 도메인 아이디.
+     * @param userExternalKey : 구성원의 외부키.
+     * @param userRequestDTO : 구성원 수정 정보를 갖고 있는 객체.
     */
     @PutMapping("/domains/{domainId}/users/{userExternalKey}")
     public void updateAllUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
-                                 @RequestBody UserRequestUpdateDTO userRequestDTO) {
+                                 @RequestBody UserRequestUpdateDTO userRequestDTO) throws Exception {
 
         UserEntity userRequestEntity = userRequestDTO.toUserEntity();
         userRequestEntity.setDomainId(domainId);
@@ -76,13 +76,13 @@ public class UserController {
     /**
      * 구성원 정보 부분 수정.
      *
-     * @param   domainId 구성원이 속한 도메인 아이디.
-     * @param   userExternalKey 구성원의 외부키.
-     * @param   userRequestDTO 구성원 수정 정보를 갖고 있는 객체.
+     * @param domainId : 구성원이 속한 도메인 아이디.
+     * @param userExternalKey : 구성원의 외부키.
+     * @param userRequestDTO : 구성원 수정 정보를 갖고 있는 객체.
      */
     @PatchMapping("/domains/{domainId}/users/{userExternalKey}")
     public void updatePartUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
-                                  @RequestBody UserRequestUpdateDTO userRequestDTO) {
+                                  @RequestBody UserRequestUpdateDTO userRequestDTO) throws Exception {
 
         UserEntity userRequestEntity = userRequestDTO.toUserEntity();
         userRequestEntity.setDomainId(domainId);
@@ -94,11 +94,11 @@ public class UserController {
     /**
      * 구성원 정보 삭제.
      *
-     * @param  domainId 구성원이 속한 도메인 아이디.
-     * @param  userExternalKey 구성원의 외부키.
+     * @param domainId : 구성원이 속한 도메인 아이디.
+     * @param userExternalKey : 구성원의 외부키.
      */
     @DeleteMapping("/domains/{domainId}/users/{userExternalKey}")
-    public void deleteUser(@PathVariable int domainId, @PathVariable String userExternalKey) {
+    public void deleteUser(@PathVariable int domainId, @PathVariable String userExternalKey) throws Exception {
 
         userService.deleteUser(domainId, userExternalKey);
     }
