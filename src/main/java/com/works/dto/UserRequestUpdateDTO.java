@@ -1,5 +1,6 @@
 package com.works.dto;
 
+import com.works.annotation.DTO;
 import com.works.annotation.DescriptionField;
 import com.works.entity.UserEntity;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
+@DTO
 public class UserRequestUpdateDTO {
 
     @DescriptionField(description = "계정")

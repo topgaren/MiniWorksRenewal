@@ -1,9 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Mini Works API Documents</title>
+    <title>Mini Works API Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
 </head>
 <body>
-    <p th:text="${test}"></p>
+    <!-- Header -->
+    <div class="navbar" style="border-bottom: 2px solid black; padding-top: 8px; background-color: white;">
+        <h4 style="margin: 0;"><img src="/img/spring-boot-logo.svg" style="width: 50px; height: 50px;" /> Spring Boot Project - Mini Works Renewal</h4>
+        <nav>
+            <button style="float: right;" type="button" class="btn btn-dark">Login</button>
+            <button style="float: right; margin-right: 10px;" type="button" class="btn btn-dark">View Chart</button>
+        </nav>
+    </div>
+
+    <!-- Main Section = Left Side Bar + API Document + Testing Tool -->
+    <div class="row" style="text-align:left; height: 100%;">
+        <!-- Main Section > Left Side Bar -->
+        <div class="col-md-2">
+            <h4 style="margin-top: 20px; margin-left: 10px;">Organization</h4>
+            <ul >
+                <li th:each="method : ${methodList}">
+                    <a style="color: black;" th:href="@{/documents/main}" th:text="${method}"></a>
+                </li>
+            </ul>
+            <h4 style="margin-top: 10px; margin-left: 10px;">User</h4>
+            <ul>
+                <!-- 이 부분도 Thymeleaf로 변경할  -->
+                <li>Get-Version3</li>
+                <li>Post-Version3</li>
+                <li>Put-Version3</li>
+                <li>Patch-Version3</li>
+                <li>Delete-Version3</li>
+            </ul>
+        </div>
+        <!-- Main Section > API Document -->
+        <div class="col-md-7" style="border-left: 2px solid black; border-right: 2px solid black;">
+            <h2 style="margin-top: 20px;">Hello World2</h2>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+            <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
+            <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
+        </div>
+        <div class="col-md-3">
+            <h3 style="margin-top: 20px;">Try This API</h3>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+            <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
+            <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
+        </div>
+    </div>
+    <div style="height: 50px; border-top: 2px solid black;">
+        <p>This is footer</p>
+    </div>
 </body>
 </html>

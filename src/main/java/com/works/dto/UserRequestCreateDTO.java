@@ -1,5 +1,6 @@
 package com.works.dto;
 
+import com.works.annotation.DTO;
 import com.works.annotation.DescriptionField;
 import com.works.entity.UserEntity;
 import lombok.AllArgsConstructor;
@@ -8,11 +9,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@DTO
 public class UserRequestCreateDTO {
 
     @DescriptionField(description = "계정")

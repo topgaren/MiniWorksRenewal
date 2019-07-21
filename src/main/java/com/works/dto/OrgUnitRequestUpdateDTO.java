@@ -1,5 +1,6 @@
 package com.works.dto;
 
+import com.works.annotation.DTO;
 import com.works.annotation.DescriptionField;
 import com.works.entity.OrgUnitEntity;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@DTO
 public class OrgUnitRequestUpdateDTO {
 
     @DescriptionField(description = "조직 이름")

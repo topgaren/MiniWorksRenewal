@@ -1,5 +1,6 @@
 package com.works.dto;
 
+import com.works.annotation.DTO;
 import com.works.annotation.DescriptionField;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@DTO
 public class OrgUnitRequestMoveDTO {
 
     @DescriptionField(description = "이동할 부모 조직의 외부키")

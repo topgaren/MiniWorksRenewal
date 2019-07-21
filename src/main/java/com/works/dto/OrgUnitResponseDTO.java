@@ -1,5 +1,6 @@
 package com.works.dto;
 
+import com.works.annotation.DTO;
 import com.works.annotation.DescriptionField;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@DTO
 public class OrgUnitResponseDTO {
 
     @DescriptionField(description = "조직 아이디")
