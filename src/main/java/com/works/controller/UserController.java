@@ -1,6 +1,7 @@
 package com.works.controller;
 
-import com.works.annotation.DescriptionMethod;
+import com.works.annotation.DescriptionAPI;
+import com.works.annotation.DescriptionAPIGroup;
 import com.works.dto.UserRequestCreateDTO;
 import com.works.dto.UserRequestUpdateDTO;
 import com.works.dto.UserResponseDTO;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/organization")
+@DescriptionAPIGroup(apiGroupName = "User", apiGroupCode = 1)
 public class UserController {
 
     @Autowired
@@ -23,9 +25,10 @@ public class UserController {
      * @param userExternalKey : 구성원의 외부키.
      * @return : 조회한 UserResponseDTO 객체.
      */
-    @GetMapping("/domains/{domainId}/users/{userExternalKey}")
-    @DescriptionMethod(apiNameKorVer = "구성원 단건 조회.", description = "단일 구성원의 정보를 조회한다.")
-    public UserResponseDTO getUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey) throws Exception {
+    @RequestMapping(value = "/domains/{domainId}/users/{userExternalKey}", method = RequestMethod.GET)
+    @DescriptionAPI(apiNameKorVer = "구성원 단건 조회", description = "단일 구성원의 정보를 조회한다.", apiCode = 1001)
+    public UserResponseDTO getUserDTO(@PathVariable(name = "domainId") int domainId,
+                                      @PathVariable(name = "userExternalKey") String userExternalKey) throws Exception {
 
         return userService.getUserDTO(domainId, userExternalKey);
     }
@@ -37,9 +40,10 @@ public class UserController {
      * @param userExternalKey : 구성원의 외부키.
      * @param userRequestDTO : 추가할 구성원 객체.
      */
-    @PostMapping("/domains/{domainId}/users/{userExternalKey}")
-    @DescriptionMethod(apiNameKorVer = "구성원 추가.", description = "구성원 정보를 새로 추가한다.")
-    public void insertUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
+    @RequestMapping(value = "/domains/{domainId}/users/{userExternalKey}", method = RequestMethod.POST)
+    @DescriptionAPI(apiNameKorVer = "구성원 추가", description = "구성원 정보를 새로 추가한다.", apiCode = 1002)
+    public void insertUserDTO(@PathVariable(name = "domainId") int domainId,
+                              @PathVariable(name = "userExternalKey") String userExternalKey,
                               @RequestBody UserRequestCreateDTO userRequestDTO) throws Exception {
 
         UserEntity userRequestEntity = userRequestDTO.toUserEntity();
@@ -56,9 +60,10 @@ public class UserController {
      * @param userExternalKey : 구성원의 외부키.
      * @param userRequestDTO : 구성원 수정 정보를 갖고 있는 객체.
     */
-    @PutMapping("/domains/{domainId}/users/{userExternalKey}")
-    @DescriptionMethod(apiNameKorVer = "구성원 수정", description = "구성원 정보를 수정한다. 전달되지 않은 정보는 삭제된다.")
-    public void updateAllUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
+    @RequestMapping(value = "/domains/{domainId}/users/{userExternalKey}", method = RequestMethod.PUT)
+    @DescriptionAPI(apiNameKorVer = "구성원 수정", description = "구성원 정보를 수정한다. 전달되지 않은 정보는 삭제된다.", apiCode = 1003)
+    public void updateAllUserDTO(@PathVariable(name = "domainId") int domainId,
+                                 @PathVariable(name = "userExternalKey") String userExternalKey,
                                  @RequestBody UserRequestUpdateDTO userRequestDTO) throws Exception {
 
         UserEntity userRequestEntity = userRequestDTO.toUserEntity();
@@ -76,9 +81,10 @@ public class UserController {
      * @param userExternalKey : 구성원의 외부키.
      * @param userRequestDTO : 구성원 수정 정보를 갖고 있는 객체.
      */
-    @PatchMapping("/domains/{domainId}/users/{userExternalKey}")
-    @DescriptionMethod(apiNameKorVer = "구성원 부분 수정", description = "구성원 정보를 수정한다. 전달되지 않은 정보는 수정하지 않는다.")
-    public void updatePartUserDTO(@PathVariable int domainId, @PathVariable String userExternalKey,
+    @RequestMapping(value = "/domains/{domainId}/users/{userExternalKey}", method = RequestMethod.PATCH)
+    @DescriptionAPI(apiNameKorVer = "구성원 부분 수정", description = "구성원 정보를 수정한다. 전달되지 않은 정보는 수정하지 않는다.", apiCode = 1004)
+    public void updatePartUserDTO(@PathVariable(name = "domainId") int domainId,
+                                  @PathVariable(name = "userExternalKey") String userExternalKey,
                                   @RequestBody UserRequestUpdateDTO userRequestDTO) throws Exception {
 
         UserEntity userRequestEntity = userRequestDTO.toUserEntity();
@@ -94,9 +100,10 @@ public class UserController {
      * @param domainId : 구성원이 속한 도메인 아이디.
      * @param userExternalKey : 구성원의 외부키.
      */
-    @DeleteMapping("/domains/{domainId}/users/{userExternalKey}")
-    @DescriptionMethod(apiNameKorVer = "구성원 삭제", description = "구성원 정보를 삭제한다.")
-    public void deleteUser(@PathVariable int domainId, @PathVariable String userExternalKey) throws Exception {
+    @RequestMapping(value = "/domains/{domainId}/users/{userExternalKey}", method = RequestMethod.DELETE)
+    @DescriptionAPI(apiNameKorVer = "구성원 삭제", description = "구성원 정보를 삭제한다.", apiCode = 1005)
+    public void deleteUser(@PathVariable(name = "domainId") int domainId,
+                           @PathVariable(name = "userExternalKey") String userExternalKey) throws Exception {
 
         userService.deleteUser(domainId, userExternalKey);
     }

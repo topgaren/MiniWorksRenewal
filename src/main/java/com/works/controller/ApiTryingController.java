@@ -1,44 +1,86 @@
 package com.works.controller;
 
+
+import com.works.annotation.DescriptionAPI;
+import com.works.document.APIInfo;
 import com.works.document.DTOInfo;
-import com.works.document.VariableInfo;
+import com.works.document.SidebarAPIGroup;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.ArrayList;
 
 @Controller
 public class ApiTryingController {
 
-    @RequestMapping("/documents/main")
-    public String documentsMain(Model model) {
+    private List<SidebarAPIGroup> sidebarAPIGroupList;
 
-        List<String> methodList = new ArrayList<>();
-        methodList.add("Get-Version3");
-        methodList.add("Post-Version3");
-        methodList.add("Put-Version3");
-        methodList.add("Patch-Version3");
-        methodList.add("Delete-Version3");
-        methodList.add("Patch-Version4");
-        methodList.add("Get-Version4");
-        methodList.add("Put-Version2");
-        model.addAttribute("methodList", methodList);
+    public ApiTryingController() throws Exception {
+        sidebarAPIGroupList = new ArrayList<>();
+    }
+
+    @RequestMapping("/documents/main")
+    public String documentsMain(Model model) throws Exception {
+
+        // 최초 한번만 실행되는 코드
+        if(sidebarAPIGroupList.isEmpty()) {
+            sidebarAPIGroupList.add(new SidebarAPIGroup("UserController"));
+            sidebarAPIGroupList.add(new SidebarAPIGroup("OrgUnitController"));
+        }
+
+        // 구성원 API Group
+        model.addAttribute("userAPIGroup", sidebarAPIGroupList.get(0));
+
+        // 조직 API Group
+        model.addAttribute("orgAPIGroup", sidebarAPIGroupList.get(1));
 
         String thymeleaf = "Hello Thymeleaf!";
         model.addAttribute("test", thymeleaf);
 
-        return "main";
+        return "DocumentsMain";
     }
 
-    @RequestMapping("/documents/usertest")
-    @ResponseBody
-    public List<VariableInfo> usertest() throws Exception {
-        Class<?> userDTOClass = Class.forName("com.works.dto.UserRequestCreateDTO");
-        DTOInfo userDTOInfo = new DTOInfo(userDTOClass);
 
-        return userDTOInfo.getVariableInfoList();
+
+
+    @RequestMapping("/documents/{apiCode}")
+    public String documentsApi(@PathVariable int apiCode, Model model) throws Exception {
+
+        // 최초 한번만 실행되는 코드
+        if(sidebarAPIGroupList.isEmpty()) {
+            sidebarAPIGroupList.add(new SidebarAPIGroup("UserController"));
+            sidebarAPIGroupList.add(new SidebarAPIGroup("OrgUnitController"));
+        }
+
+        // 구성원 API Group
+        model.addAttribute("userAPIGroup", sidebarAPIGroupList.get(0));
+
+        // 조직 API Group
+        model.addAttribute("orgAPIGroup", sidebarAPIGroupList.get(1));
+
+        // apiCode로 문서화할 APIInfo 객체 얻어오기
+        APIInfo targetAPIInfo = null;
+        for(SidebarAPIGroup sidebarAPIGroup : sidebarAPIGroupList) {
+            for(APIInfo apiInfo : sidebarAPIGroup.getApiInfoList()) {
+                if(apiCode == apiInfo.getApiCode()) {
+                    targetAPIInfo = apiInfo;
+                    break;
+                }
+            }
+        }
+
+        // 존재하지 않는 apiCode를 사용하여 targetApiInfo를 얻어오지 못했다면 최초 화면으로 이동.
+        if(targetAPIInfo == null) {
+            return "DocumentsMain";
+        }
+
+        model.addAttribute("apiInfo", targetAPIInfo);
+
+        return "DocumentsAPI";
     }
 }

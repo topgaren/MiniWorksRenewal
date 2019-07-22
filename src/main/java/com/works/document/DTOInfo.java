@@ -1,6 +1,7 @@
 package com.works.document;
 
 import com.works.annotation.DTO;
+import com.works.annotation.DescriptionField;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +20,10 @@ public class DTOInfo {
 
     private String modelName;
     private String simpleModelName;
-    private List<VariableInfo> variableInfoList;
+    private List<FieldInfo> fieldInfoList;
 
     /**
-     * DTOInfo의 생성자.
+     * DTOInfo 클래스의 생성자.
      *
      * @param dtoClass : 정보 파싱 대상 DTO 클래스.
      * @throws Exception
@@ -31,7 +32,7 @@ public class DTOInfo {
 
         modelName = dtoClass.getName();
         simpleModelName = dtoClass.getSimpleName();
-        variableInfoList = getAllVariableInfo(dtoClass, "");
+        fieldInfoList = getAllVariableInfo(dtoClass, "");
     }
 
     /**
@@ -42,9 +43,9 @@ public class DTOInfo {
      * @return : VariableInfo 객체의 리스트를 반환한다.
      * @throws Exception
      */
-    public List<VariableInfo> getAllVariableInfo(Class<?> dtoClass, String nestedObjectState) throws Exception {
+    public List<FieldInfo> getAllVariableInfo(Class<?> dtoClass, String nestedObjectState) throws Exception {
 
-        List<VariableInfo> variableInfoList = new ArrayList<>();
+        List<FieldInfo> fieldInfoList = new ArrayList<>();
 
         for(Field field : dtoClass.getDeclaredFields()) {
             field.setAccessible(true);
@@ -54,7 +55,7 @@ public class DTOInfo {
             String type = field.getType().getName();
             String simpleType = field.getType().getSimpleName();
             boolean required = false;
-            String description = "";
+            String description = field.getAnnotation(DescriptionField.class).description();
 
             // 필드 중 리스트가 있는 경우
             if(simpleType.equals("List")) {
@@ -67,17 +68,17 @@ public class DTOInfo {
             }
 
             // 설정한 필드 값에 따라 VariableInfo 객체 생성 후 리스트에 추가.
-            variableInfoList.add(new VariableInfo(parameter, type, simpleType, required, description));
+            fieldInfoList.add(new FieldInfo(parameter, type, simpleType, required, description));
 
             // 추가한 필드가 API DTO Nested Object인 경우 해당 Object의 모든 필드 값을 파싱(재귀 호출 형태로).
             if(!field.getType().isPrimitive()) {
                 Class<?> nestedObject = Class.forName(type);
                 if(nestedObject.isAnnotationPresent(DTO.class)) {
-                    variableInfoList.addAll(getAllVariableInfo(nestedObject, parameter + "."));
+                    fieldInfoList.addAll(getAllVariableInfo(nestedObject, parameter + "."));
                 }
             }
         }
 
-        return variableInfoList;
+        return fieldInfoList;
     }
 }

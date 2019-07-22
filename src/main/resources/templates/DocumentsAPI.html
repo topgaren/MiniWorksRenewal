@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mini Works API Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+    <!--JQuery-->
+    <script
+    src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div class="navbar" style="border-bottom: 2px solid black; padding-top: 8px; background-color: white;">
+        <h4 style="margin: 0;"><img src="/img/spring-boot-logo.svg" style="width: 50px; height: 50px;" /> Spring Boot Project - Mini Works Renewal</h4>
+        <nav>
+            <button style="float: right;" type="button" class="btn btn-dark">Login</button>
+            <button style="float: right; margin-right: 10px;" type="button" class="btn btn-dark">View Chart</button>
+        </nav>
+    </div>
+
+    <!-- Main Section = Left Side Bar + API Document + Testing Tool -->
+    <div class="row" style="text-align:left; height: 100%;">
+        <!-- Main Section > Left Side Bar -->
+        <div class="col-md-2">
+            <div style="margin-left: 20px; margin-top: 20px;">
+                <h4 th:text="${userAPIGroup.apiGroupName}"></h4>
+                <ul >
+                    <li th:each="apiInfo : ${userAPIGroup.apiInfoList}">
+                        <a style="color: black;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
+                    </li>
+                </ul>
+                <br/>
+                <h4 th:text="${orgAPIGroup.apiGroupName}"></h4>
+                <ul>
+                    <li th:each="apiInfo : ${orgAPIGroup.apiInfoList}">
+                        <a style="color: black;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Main Section > API Document -->
+        <div class="col-md-7" style="border-left: 2px solid black; border-right: 2px solid black;">
+            <div style="padding-left: 30px; padding-right: 30px; padding-top: 10px;">
+                <!-- API 이름 및 설명 -->
+                <div style="margin-top: 20px; border-bottom: 0.5px gray solid;">
+                    <h2 th:text="${apiInfo.apiNameKorVer}"></h2>
+                </div>
+                <p style="padding-top: 10px;" th:text="${apiInfo.apiDescription}"></p><br/>
+
+                <!-- API 요청 URL -->
+                <div name="requestURL">
+                    <h4>Request URL</h4>
+                    <p style="padding-top: 10px;" th:text="'http://localhost:8080' + ${apiInfo.requestURI}"></p><br/>
+                </div>
+
+                <!-- API HTTP Method -->
+                <div name="httpMethod">
+                    <h4>HTTP Method</h4>
+                    <p th:text="${apiInfo.httpMethod}"></p><br/>
+                </div>
+
+                <script src="/javascript/makeParameterTable.js"></script>
+
+                <!-- Path Parameter -->
+                <div id="pathParameterTable">
+                    <h4>Path Parameter</h4>
+                    <script th:inline="javascript">
+                        $(document).ready(function() {
+                            var ppfieldInfoList = /*[[ ${apiInfo.pathParameterInfoList} ]]*/ 'default';
+                            var documentOutput = makeParameterTable(ppfieldInfoList);
+                            $('#pathParameterTable').append(documentOutput);
+                        });
+                    </script>
+                </div><br/>
+
+                <!-- Request Body(If Necessary) -->
+                <div id="requestBodyTable" th:if="${apiInfo.requestBodyInfo}">
+                    <h4>Request Body</h4>
+                    <script th:inline="javascript">
+                        $(document).ready(function() {
+                            var rqstfieldInfoList = /*[[ ${apiInfo.requestBodyInfo.fieldInfoList} ]]*/ 'default';
+                            var documentOutput = makeParameterTable(rqstfieldInfoList);
+                            $('#requestBodyTable').append(documentOutput);
+                        });
+                    </script>
+                </div><br/>
+
+                <!-- Response Body -->
+                <h4>Response</h4>
+                <div id="responseTable" th:if="${apiInfo.responseBodyInfo}">
+                    <script th:inline="javascript">
+                        $(document).ready(function() {
+                            var rspsfieldInfoList = /*[[ ${apiInfo.responseBodyInfo.fieldInfoList} ]]*/ 'default';
+                            var documentOutput = makeParameterTable(rspsfieldInfoList);
+                            $('#responseTable').append(documentOutput);
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Section > Testing Tool -->
+        <div class="col-md-3">
+            <h3 style="margin-top: 20px;">Try This API</h3><br/>
+            <div id="requestForm">
+                <h4>Path Parameter</h4>
+                <table style="border-spacing: 5px; border-collapse: separate;">
+                    <tr th:each="pathParameterInfo : ${apiInfo.pathParameterInfoList}">
+                        <td><label th:for="${pathParameterInfo.parameter}" th:text="${pathParameterInfo.parameter}" style="margin-bottom: 0;"></label></td>
+                        <td><input th:id="${pathParameterInfo.parameter}" type="text" style="width: 180px; font-size: 12px;" /></td>
+                    </tr>
+                </table><br>
+                <div th:if="${apiInfo.requestBodyInfo}">
+                    <h4>Request Body</h4>
+                    <textarea style="width: 310px; height: 200px; resize: none;"></textarea>
+                </div>
+                <button type="button" id="sendRequest" class="btn btn-secondary">Send Request</button>
+            </div><br/>
+            <div id="responseForm">
+                <h4>Response</h4>
+                <textarea style="width: 310px; height: 400px; resize: none;"></textarea>
+            </div>
+        </div>
+    </div>
+    <div style="height: 50px; border-top: 2px solid black;">
+        <p>This is footer</p>
+    </div>
+</body>
+</html>

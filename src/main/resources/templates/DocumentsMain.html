@@ -22,20 +22,18 @@
     <div class="row" style="text-align:left; height: 100%;">
         <!-- Main Section > Left Side Bar -->
         <div class="col-md-2">
-            <h4 style="margin-top: 20px; margin-left: 10px;">Organization</h4>
+            <h4 style="margin-top: 20px; margin-left: 10px;" th:text="${userAPIGroup.apiGroupName}"></h4>
             <ul >
-                <li th:each="method : ${methodList}">
-                    <a style="color: black;" th:href="@{/documents/main}" th:text="${method}"></a>
+                <li th:each="apiInfo : ${userAPIGroup.apiInfoList}">
+                    <a style="color: black;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
                 </li>
             </ul>
-            <h4 style="margin-top: 10px; margin-left: 10px;">User</h4>
+            <br/>
+            <h4 style="margin-top: 10px; margin-left: 10px;" th:text="${orgAPIGroup.apiGroupName}"></h4>
             <ul>
-                <!-- 이 부분도 Thymeleaf로 변경할  -->
-                <li>Get-Version3</li>
-                <li>Post-Version3</li>
-                <li>Put-Version3</li>
-                <li>Patch-Version3</li>
-                <li>Delete-Version3</li>
+                <li th:each="apiInfo : ${orgAPIGroup.apiInfoList}">
+                    <a style="color: black;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
+                </li>
             </ul>
         </div>
         <!-- Main Section > API Document -->

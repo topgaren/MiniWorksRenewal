@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class VariableInfo {
+public class FieldInfo {
 
     private String parameter;
     private String type;

@@ -1,5 +1,7 @@
 package com.works.controller;
 
+import com.works.annotation.DescriptionAPI;
+import com.works.annotation.DescriptionAPIGroup;
 import com.works.dto.OrgUnitRequestCreateDTO;
 import com.works.dto.OrgUnitRequestMoveDTO;
 import com.works.dto.OrgUnitRequestUpdateDTO;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/organization")
+@DescriptionAPIGroup(apiGroupName = "Organization", apiGroupCode = 2)
 public class OrgUnitController {
 
     @Autowired
@@ -23,8 +26,10 @@ public class OrgUnitController {
      * @param orgExternalKey : 조직의 외부키.
      * @return : 조회한 OrgUnitDTO 객체.
      */
-    @GetMapping("/domains/{domainId}/orgs/{orgExternalKey}")
-    public OrgUnitResponseDTO getOrgUnitDTO(@PathVariable int domainId, @PathVariable String orgExternalKey) throws Exception {
+    @RequestMapping(value = "/domains/{domainId}/orgs/{orgExternalKey}", method = RequestMethod.GET)
+    @DescriptionAPI(apiNameKorVer = "조직 단건 조회", description = "단일 조직 정보를 조회한다.", apiCode = 2001)
+    public OrgUnitResponseDTO getOrgUnitDTO(@PathVariable(name = "domainId") int domainId,
+                                            @PathVariable(name = "orgExternalKey") String orgExternalKey) throws Exception {
 
         return orgUnitService.getOrgUnitDTO(domainId, orgExternalKey);
     }
@@ -36,8 +41,10 @@ public class OrgUnitController {
      * @param orgExternalKey : 조직의 외부키.
      * @param orgUnitRequestDTO : 추가할 조직 정보를 담고 있는 객체.
      */
-    @PostMapping("/domains/{domainId}/orgs/{orgExternalKey}")
-    public void insertOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey,
+    @RequestMapping(value = "/domains/{domainId}/orgs/{orgExternalKey}", method = RequestMethod.POST)
+    @DescriptionAPI(apiNameKorVer = "조직 추가", description = "조직 정보를 새로 추가한다.", apiCode = 2002)
+    public void insertOrgUnit(@PathVariable(name = "domainId") int domainId,
+                              @PathVariable(name = "orgExternalKey") String orgExternalKey,
                               @RequestBody OrgUnitRequestCreateDTO orgUnitRequestDTO) throws Exception {
 
         // 도메인 아이디와 외부키에 관한 예외 처리 코드 추가할 것.
@@ -59,8 +66,10 @@ public class OrgUnitController {
      * @param orgExternalKey : 조직의 외부키.
      * @param orgUnitRequestDTO : 수정 정보를 담고 있는 객체.
      */
-    @PutMapping("/domains/{domainId}/orgs/{orgExternalKey}")
-    public void updateAllOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey,
+    @RequestMapping(value = "/domains/{domainId}/orgs/{orgExternalKey}", method = RequestMethod.PUT)
+    @DescriptionAPI(apiNameKorVer = "조직 수정", description = "조직 정보를 수정한다. 전달하지 않은 정보는 삭제된다.", apiCode = 2003)
+    public void updateAllOrgUnit(@PathVariable(name = "domainId") int domainId,
+                                 @PathVariable(name = "orgExternalKey") String orgExternalKey,
                                  @RequestBody OrgUnitRequestUpdateDTO orgUnitRequestDTO) throws Exception {
 
         OrgUnitEntity requestOrgUnitEntity = orgUnitRequestDTO.toOrgUnitEntity();
@@ -78,8 +87,10 @@ public class OrgUnitController {
      * @param orgExternalKey : 조직의 외부키.
      * @param orgUnitRequestDTO : 수정 정보를 담고 있는 객체.
      */
-    @PatchMapping("/domains/{domainId}/orgs/{orgExternalKey}")
-    public void updatePartOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey,
+    @RequestMapping(value = "/domains/{domainId}/orgs/{orgExternalKey}", method = RequestMethod.PATCH)
+    @DescriptionAPI(apiNameKorVer = "조직 부분 수정", description = "조직 정보를 수정한다. 전달하지 않은 정보는 수정하지 않는다.", apiCode = 2004)
+    public void updatePartOrgUnit(@PathVariable(name = "domainId") int domainId,
+                                  @PathVariable(name = "orgExternalKey") String orgExternalKey,
                               @RequestBody OrgUnitRequestUpdateDTO orgUnitRequestDTO) throws Exception {
 
         OrgUnitEntity requestOrgUnitEntity = orgUnitRequestDTO.toOrgUnitEntity();
@@ -96,8 +107,10 @@ public class OrgUnitController {
      * @param orgExternalKey : 조직의 외부키.
      * @param orgUnitRequestDTO : 이동 정보를 담고 있는 객체
      */
-    @PatchMapping("/domains/{domainId}/orgs/{orgExternalKey}/move")
-    public void moveOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey,
+    @RequestMapping(value = "/domains/{domainId}/orgs/{orgExternalKey}/move", method = RequestMethod.PATCH)
+    @DescriptionAPI(apiNameKorVer = "조직 이동", description = "조직을 이동시킨다. 이동 시 하위 조직도 같이 이동한다.", apiCode = 2005)
+    public void moveOrgUnit(@PathVariable(name = "domainId") int domainId,
+                            @PathVariable(name = "orgExternalKey") String orgExternalKey,
                             @RequestBody OrgUnitRequestMoveDTO orgUnitRequestDTO) throws Exception {
 
         String parentOrgExternalKey = orgUnitRequestDTO.getParentOrgExternalKey();
@@ -112,8 +125,10 @@ public class OrgUnitController {
      * @param domainId : 조직이 속한 도메인 외부키.
      * @param orgExternalKey : 조직의 외부키.
      */
-    @DeleteMapping("/domains/{domainId}/orgs/{orgExternalKey}")
-    public void deleteOrgUnit(@PathVariable int domainId, @PathVariable String orgExternalKey) throws Exception {
+    @RequestMapping(value = "/domains/{domainId}/orgs/{orgExternalKey}", method = RequestMethod.DELETE)
+    @DescriptionAPI(apiNameKorVer = "조직 삭제", description = "조직 정보를 삭제한다.", apiCode = 2006)
+    public void deleteOrgUnit(@PathVariable(name = "domainId") int domainId,
+                              @PathVariable(name = "orgExternalKey") String orgExternalKey) throws Exception {
 
         orgUnitService.deleteOrgUnit(domainId, orgExternalKey);
     }

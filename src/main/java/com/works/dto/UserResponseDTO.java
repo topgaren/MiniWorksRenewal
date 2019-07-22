@@ -16,6 +16,7 @@ import java.util.Date;
 @DTO
 public class UserResponseDTO {
 
+    @DescriptionField(description = "도메인 아이디")
     private int domainId;
 
     @DescriptionField(description = "계정")
@@ -24,6 +25,7 @@ public class UserResponseDTO {
     @DescriptionField(description = "구성원 이름")
     private String userName;
 
+    @DescriptionField(description = "구성원 외부키")
     private String userExternalKey;
 
     @DescriptionField(description = "권한")

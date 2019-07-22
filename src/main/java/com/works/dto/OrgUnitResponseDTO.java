@@ -17,11 +17,13 @@ public class OrgUnitResponseDTO {
     @DescriptionField(description = "조직 아이디")
     private int orgId;
 
+    @DescriptionField(description = "도메인 아이디")
     private int domainId;
 
     @DescriptionField(description = "조직 이름")
     private String orgName;
 
+    @DescriptionField(description = "조직 외부키")
     private String orgExternalKey;
 
     @DescriptionField(description = "조직 트리 깊이 (최소 깊이: 1)")
