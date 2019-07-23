@@ -5,6 +5,7 @@ import com.works.annotation.DescriptionAPI;
 import com.works.document.APIInfo;
 import com.works.document.DTOInfo;
 import com.works.document.SidebarAPIGroup;
+import com.works.dto.UserRequestCreateDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,5 +83,14 @@ public class ApiTryingController {
         model.addAttribute("apiInfo", targetAPIInfo);
 
         return "DocumentsAPI";
+    }
+
+    @RequestMapping("/documents/getdto")
+    @ResponseBody
+    public DTOInfo getDTO() throws Exception {
+        Class<?> cls = Class.forName("com.works.dto.UserRequestCreateDTO");
+        DTOInfo result = new DTOInfo(cls);
+
+        return result;
     }
 }
