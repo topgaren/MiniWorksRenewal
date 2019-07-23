@@ -39,12 +39,10 @@ public class APIInfo {
         apiNameKorVer = api.getAnnotation(DescriptionAPI.class).apiNameKorVer();
         apiDescription = api.getAnnotation(DescriptionAPI.class).description();
         requestURI = api.getAnnotation(RequestMapping.class).value()[0];
-        apiResponse = api.getAnnotation(DescriptionAPI.class).response();
         httpMethod = api.getAnnotation(RequestMapping.class).method()[0].toString();
+        apiResponse = api.getAnnotation(DescriptionAPI.class).response();
         apiCode = api.getAnnotation(DescriptionAPI.class).apiCode();
-        if(httpMethod.equals("POST") || httpMethod.equals("PUT") || httpMethod.equals("PATCH")) {
-            httpMethod += " (Content-Type: application/json)";
-        }
+
 
         requestBodyInfo = null;
         responseBodyInfo = null;

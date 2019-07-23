@@ -13,10 +13,13 @@
     src="https://code.jquery.com/jquery-3.3.1.js"
     integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
     crossorigin="anonymous"></script>
+
+    <!--custom css-->
+    <link rel="stylesheet" href="/css/Documents.css" type="text/css">
 </head>
 <body>
-    <!-- Header -->
-    <div class="navbar" style="border-bottom: 2px solid black; padding-top: 8px; background-color: white;">
+    <!-- Header(Fixed) -->
+    <div class="navbar" id="header">
         <h4 style="margin: 0;"><img src="/img/spring-boot-logo.svg" style="width: 50px; height: 50px;" /> Spring Boot Project - Mini Works Renewal</h4>
         <nav>
             <button style="float: right;" type="button" class="btn btn-dark">Login</button>
@@ -24,152 +27,124 @@
         </nav>
     </div>
 
-    <!-- Main Section = Left Side Bar + API Document + Testing Tool -->
-    <div class="row" style="text-align:left; height: 100%;">
+    <!-- Sidebar(Fixed) -->
+    <div id="sidebar">
+        <h4 th:text="${userAPIGroup.apiGroupName}"></h4>
+        <ul >
+            <li th:each="apiInfo : ${userAPIGroup.apiInfoList}">
+                <a style="color: white;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
+            </li>
+        </ul>
+        <br/>
+        <h4 th:text="${orgAPIGroup.apiGroupName}"></h4>
+        <ul>
+            <li th:each="apiInfo : ${orgAPIGroup.apiInfoList}">
+                <a style="color: white;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
+            </li>
+        </ul>
+    </div>
 
-        <!-- Main Section > Left Side Bar -->
-        <div class="col-md-2">
-            <div style="margin-left: 20px; margin-top: 20px;">
-                <h4 th:text="${userAPIGroup.apiGroupName}"></h4>
-                <ul >
-                    <li th:each="apiInfo : ${userAPIGroup.apiInfoList}">
-                        <a style="color: black;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
-                    </li>
-                </ul>
-                <br/>
-                <h4 th:text="${orgAPIGroup.apiGroupName}"></h4>
-                <ul>
-                    <li th:each="apiInfo : ${orgAPIGroup.apiInfoList}">
-                        <a style="color: black;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
-                    </li>
-                </ul>
-            </div>
+    <!-- Main Docuement & API Trying Tool -->
+    <div id="document">
+
+        <div id="methodAndURL">
+            <span th:id="method" th:text="${apiInfo.httpMethod}"></span>
+            <span th:id="URL" th:text="'http://localhost:8080' + ${apiInfo.requestURI}"></span>
         </div>
 
-        <div class="col-md-10">
-            <div class="row" style="text-align:left; height: 100%;">
+        <!-- API Document + API Trying Tool -->
+        <div id="apiDocumentAndTryingTool">
+            <h2 th:text="${apiInfo.apiNameKorVer}"></h2>
+            <h6 th:text="${apiInfo.apiDescription}"></h6><br/>
 
-                <!-- Main Section > API Document -->
-                <div class="col-md-7" style="border-left: 2px solid black; border-right: 2px solid black;">
-                    <div style="padding-left: 30px; padding-right: 30px; padding-top: 10px;">
-                        <!-- API 이름 및 설명 -->
-                        <div style="margin-top: 20px; border-bottom: 0.5px gray solid;">
-                            <h2 th:text="${apiInfo.apiNameKorVer}"></h2>
-                        </div>
-                        <p style="padding-top: 10px;" th:text="${apiInfo.apiDescription}"></p><br/>
+            <script src="/javascript/makeParameterTable.js"></script>
 
-                        <!-- API 요청 URL -->
-                        <div name="requestURL">
-                            <h4>Request URL</h4>
-                            <p style="padding-top: 10px;" th:text="'http://localhost:8080' + ${apiInfo.requestURI}"></p><br/>
-                        </div>
-
-                        <!-- API HTTP Method -->
-                        <div name="httpMethod">
-                            <h4>HTTP Method</h4>
-                            <p th:text="${apiInfo.httpMethod}"></p><br/>
-                        </div>
-
-                        <script src="/javascript/makeParameterTable.js"></script>
-
-                        <!-- Path Parameter -->
-                        <div id="pathParameterTable">
-                            <h4>Path Parameter</h4>
-                            <script th:inline="javascript">
-                                $(document).ready(function() {
-                                    var ppfieldInfoList = /*[[ ${apiInfo.pathParameterInfoList} ]]*/ 'default';
-                                    var documentOutput = makeParameterTable(ppfieldInfoList);
-                                    $('#pathParameterTable').append(documentOutput);
-                                });
-                            </script>
-                        </div><br/>
-
-                        <!-- Request Body(If Necessary) -->
-                        <div id="requestBodyTable" th:if="${apiInfo.requestBodyInfo}">
-                            <h4>Request Body</h4>
-                            <script th:inline="javascript">
-                                $(document).ready(function() {
-                                    var rqstfieldInfoList = /*[[ ${apiInfo.requestBodyInfo.fieldInfoList} ]]*/ 'default';
-                                    var documentOutput = makeParameterTable(rqstfieldInfoList);
-                                    $('#requestBodyTable').append(documentOutput);
-                                });
-                            </script>
-                        </div><br/>
-
-                        <!-- Response Body -->
-                        <h4>Response</h4>
-                        <div id="responseTable" th:if="${apiInfo.responseBodyInfo}">
-                            <script th:inline="javascript">
-                                $(document).ready(function() {
-                                    var rspsfieldInfoList = /*[[ ${apiInfo.responseBodyInfo.fieldInfoList} ]]*/ 'default';
-                                    var documentOutput = makeParameterTable(rspsfieldInfoList);
-                                    $('#responseTable').append(documentOutput);
-                                });
-                            </script>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Main Section > Testing Tool -->
-                <div class="col-md-5">
-                    <h3 style="margin-top: 20px;">Try This API</h3><br/>
-                    <div id="requestForm">
-                        <h4>Path Parameter</h4>
-                        <table style="border-spacing: 5px; border-collapse: separate;">
-                            <tr th:each="pathParameterInfo : ${apiInfo.pathParameterInfoList}">
-                                <td><label th:for="${pathParameterInfo.parameter}" th:text="${pathParameterInfo.parameter}" style="margin-bottom: 0;"></label></td>
-                                <td><input class="path-parameter" th:id="${pathParameterInfo.parameter}" type="text" style="width: 180px; font-size: 12px;" /></td>
-                            </tr>
-                        </table><br>
-                        <div th:id="requestForm" th:if="${apiInfo.requestBodyInfo}">
-                            <h4>Request Body</h4>
-                            <script src="/javascript/modelInputGenerator.js"></script>
-                            <script th:inline="javascript">
-                                $(document).ready(function() {
-                                    var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
-                                    appendModel(requestBodyInfo, document.getElementById('requestForm'));
-                                });
-                            </script>
-                        </div>
-                        <button type="button" id="sendRequest" class="btn btn-secondary">Send Request</button>
-                    </div><br/>
-                    <div id="responseForm">
-                        <h4>Response</h4>
-                        <textarea id="responseBodyTextArea" style="width: 450px; height: 400px;"></textarea>
-                    </div>
-                </div>
-
-                <!-- Send Request & Recieve Response -->
+            <!-- Path Parameter Document -->
+            <div id="documentPathParameter">
+                <h5>Path Parameter</h5>
                 <script th:inline="javascript">
-                    $('#sendRequest').click(function() {
-                        var apiURL = /*[[ ${apiInfo.requestURI} ]]*/ 'default';
-                        var httpMethod = /*[[ ${apiInfo.httpMethod} ]]*/ 'default';
-                        $('.path-parameter').each(function(index, elem) {
-                            var pathParameter = elem.id;
-                            apiURL = apiURL.replace("{" + pathParameter + "}" ,$('#' + pathParameter).val());
-                        });
-
-                        $.ajax({
-                            type: httpMethod,
-                            url: apiURL,
-                            dataType: 'json',
-                            success: function(data) {
-                                $('#responseBodyTextArea').val(JSON.stringify(data,null,4));
-                            },
-                            error: function(data) {
-                                $('#responseBodyTextArea').val(JSON.stringify(data.responseJSON,null,4));
-                            }
-                        });
+                    $(document).ready(function() {
+                        var ppfieldInfoList = /*[[ ${apiInfo.pathParameterInfoList} ]]*/ 'default';
+                        var documentOutput = makeParameterTable(ppfieldInfoList, 'pathParameterTable');
+                        $('#documentPathParameter').append(documentOutput);
                     });
                 </script>
             </div>
+            <!-- END Path Parameter Document -->
 
+            <!-- Request Body Document (if Necessary) -->
+            <div th:id="documentRequestBody" th:if="${apiInfo.requestBodyInfo}">
+                <br/><h5>Request Body</h5>
+                <script th:inline="javascript">
+                    $(document).ready(function() {
+                        var rqstfieldInfoList = /*[[ ${apiInfo.requestBodyInfo.fieldInfoList} ]]*/ 'default';
+                        var documentOutput = makeParameterTable(rqstfieldInfoList, 'requestBodyTable');
+                        $('#documentRequestBody').append(documentOutput);
+                    });
+                </script>
+            </div>
+            <!-- END Request Body Document (if Necessary) -->
+
+            <!-- Response Body Document (if Necessary) -->
+            <div th:id="documentResponseBody" th:if="${apiInfo.responseBodyInfo}">
+                <br/><h5>Response</h5>
+                <script th:inline="javascript">
+                    $(document).ready(function() {
+                        var rspsfieldInfoList = /*[[ ${apiInfo.responseBodyInfo.fieldInfoList} ]]*/ 'default';
+                        var documentOutput = makeParameterTable(rspsfieldInfoList, 'responseBodyTable');
+                        $('#documentResponseBody').append(documentOutput);
+                    });
+                </script>
+            </div>
+            <!-- END Response Body Document (if Necessary) -->
+
+            <!-- API Trying Tool -->
+            <br/><br/><h4>Try This API</h4>
+            <div id="tryingToolBox">
+
+                <!-- Trying : Path Parameter -->
+                <div id="tryingPathParameter">
+                    <h6>Path Parameters</h6>
+                    <div id="pathParameterTryingBox">
+                        <table id="pathParameterTryingTable">
+                            <tr th:each="pathParameterInfo : ${apiInfo.pathParameterInfoList}">
+                                <td><label th:for="${pathParameterInfo.parameter}" th:text="${pathParameterInfo.parameter}" style="margin-bottom: 0;"></label></td>
+                                <td><input class="path-parameter" th:id="${pathParameterInfo.parameter}" type="text" style="width: 400px; size: 12px;" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- END Trying : Path Parameter -->
+
+                <!-- Trying : Request Body (if Necessary) -->
+                <div th:id="tryingRequestBody" th:if="${apiInfo.requestBodyInfo}">
+                    <h6>Request Body</h6>
+                    <div id="requestBodyInputForm" style="width: 100%; height: 250px; border: 1px solid #D7D7D7"></div>
+                    <script src="/javascript/modelInputGenerator.js"></script>
+                    <script th:inline="javascript">
+                        $(document).ready(function() {
+                            var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
+                            appendModel(requestBodyInfo, document.getElementById('requestBodyInputForm'));
+                        });
+                    </script>
+                </div>
+                <!-- END Trying : Request Body (if Necessary) -->
+
+                <!-- Trying : 'Send Request' Button -->
+                <button type="button" id="sendRequest" class="btn btn-dark" style="margin-top: 10px;">Send Request</button>
+
+
+                <!-- Trying : Response -->
+                <div>
+                    <br/><h6>Response</h6>
+                    <textarea id="responseBodyTextArea" readonly="readonly" style="width: 100%; height: 250px; border: 1px solid #D7D7D7"></textarea>
+                </div>
+                <!-- END Trying : Response -->
+            </div>
+            <!-- END API Trying Tool -->
         </div>
+        <!-- END API Document + API Trying Tool -->
     </div>
-
-    <!-- Footer -->
-    <div style="height: 50px; border-top: 2px solid black;">
-        <p>This is footer</p>
-    </div>
+    <!-- END Main Docuement & API Trying Tool -->
 </body>
 </html>

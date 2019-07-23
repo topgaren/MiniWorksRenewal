@@ -1,10 +1,10 @@
-function makeParameterTable(parameterInfoList) {
+function makeParameterTable(parameterInfoList, tableId) {
 
     documentOutput = "";
     documentOutput += '<font size="2">';
-    documentOutput += '    <table class="table table-striped table-bordered">';
+    documentOutput += '    <table class="field-table" ' + 'id="' + tableId + '">';
     documentOutput += '        <thead>';
-    documentOutput += '        <tr align="center">';
+    documentOutput += '        <tr>';
     documentOutput += '            <th>Parameter</th>';
     documentOutput += '            <th>Type</th>';
     documentOutput += '            <th>Required</th>';

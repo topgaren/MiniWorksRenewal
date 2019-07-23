@@ -1,0 +1,105 @@
+ @charset "utf-8";
+    #header {
+        background-color: white;
+        width: 100%;
+        height: 65px;
+        position: fixed;
+        z-index: 999;
+        top: 0px;
+        left: 0px;
+    }
+
+    #sidebar {
+        background-color: #1D1D1D;
+        color: white;
+        width: 22%;
+        height: 100%;
+        position: fixed;
+        z-index: 999;
+        top: 65px;
+        left: 0px;
+        padding: 20px;
+    }
+
+    #document {
+        background-color: #EFEFEF;
+        width: 78%;
+        height: 100%;
+        position: relative;
+        margin-top: 65px;
+        margin-left: 22%;
+        padding: 30px;
+
+    }
+
+    #methodAndURL {
+        height: 40px;
+        width: 100%;
+        display: table;
+    }
+
+    #methodAndURL > * {
+        vertical-align: middle;
+        display: table-cell;
+    }
+
+    #methodAndURL > #method {
+        text-align: center;
+        width: 80px;
+        background-color: red;
+        color: white;
+        border: 1px solid red;
+        font-weight: bold;
+    }
+
+    #methodAndURL > #URL {
+        border: 1px solid #B1B1B1;
+        padding-left: 10px;
+    }
+
+    #apiDocumentAndTryingTool {
+        background-color: white;
+        border: 1px solid #B1B1B1;
+        border-top: none;
+        padding: 30px;
+    }
+
+    .field-table {
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .field-table th:nth-child(1) { width: 16%; }
+    .field-table th:nth-child(2) { width: 16%; }
+    .field-table th:nth-child(3) { width: 16%; }
+    .field-table th:nth-child(4) { width: 52%; }
+
+    .field-table th {
+        background-color: black;
+        color: white;
+        padding-left: 10px;
+        height: 30px;
+    }
+
+    .field-table td {
+        border-bottom: 1px solid #D7D7D7;
+        padding-left: 10px;
+        height: 30px;
+    }
+
+    #tryingToolBox {
+        height: 100%;
+        margin-top: 10px;
+        padding: 20px;
+        border: 1px solid #B1B1B1;
+    }
+
+    #pathParameterTryingBox {
+        padding: 5px;
+        border: 1px solid #D7D7D7;
+    }
+
+    #pathParameterTryingTable {
+        border-spacing: 20px 5px;
+        border-collapse: separate;
+    }
