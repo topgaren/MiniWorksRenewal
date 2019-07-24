@@ -29,11 +29,6 @@ public class OrgUnitEntity {
 
     private String orgDescription;
 
-    public OrgUnitResponseDTO toOrgUnitDTO() {
-        return new OrgUnitResponseDTO(orgId, domainId, orgName, orgExternalKey,
-                depth, siblingOrder, parentId, orgDescription);
-    }
-
     public void updateOrgUnit(OrgUnitEntity addedOrgUnitEntity) {
 
         orgName = StringUtils.isEmpty(addedOrgUnitEntity.getOrgName()) ? orgName : addedOrgUnitEntity.getOrgName();

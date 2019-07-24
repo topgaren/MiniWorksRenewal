@@ -2,6 +2,7 @@ package com.works.dto;
 
 import com.works.annotation.DTO;
 import com.works.annotation.DescriptionField;
+import com.works.entity.OrgUnitEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,4 +38,15 @@ public class OrgUnitResponseDTO {
 
     @DescriptionField(description = "조직 소개")
     private String orgDescription;
+
+    public OrgUnitResponseDTO(OrgUnitEntity orgUnitEntity) {
+        this.orgId = orgUnitEntity.getOrgId();
+        this.domainId = orgUnitEntity.getOrgId();
+        this.orgName = orgUnitEntity.getOrgName();
+        this.orgExternalKey = orgUnitEntity.getOrgExternalKey();
+        this.depth = orgUnitEntity.getDepth();
+        this.siblingOrder = orgUnitEntity.getSiblingOrder();
+        this.parentId = orgUnitEntity.getParentId();
+        this.orgDescription = orgUnitEntity.getOrgDescription();
+    }
 }

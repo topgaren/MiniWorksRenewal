@@ -35,12 +35,6 @@ public class UserEntity {
 
     private Date hireDate;
 
-    public UserResponseDTO toUserDTO() {
-
-        return new UserResponseDTO(domainId, account, userName, userExternalKey, authentication,
-                cellPhone, email, corporationAddress, hireDate);
-    }
-
     public void updateUser(UserEntity addedUserEntity) {
         // addUser의 필드가 0 또는 null 값인 경우 기존 값을 그대로 사용하도록
         // User 필드 추가/삭제 시 해당 코드도 변경해야하므로 유지 및 보수에 적절하지 않아보임.

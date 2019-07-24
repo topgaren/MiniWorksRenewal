@@ -40,7 +40,7 @@ public class UserService {
             throw new NullException("외부키에 해당하는 구성원이 존재하지 않습니다.");
         }
 
-        return resultUserEntity.toUserDTO();
+        return new UserResponseDTO(resultUserEntity);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.works.dto;
 
 import com.works.annotation.DTO;
 import com.works.annotation.DescriptionField;
+import com.works.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,4 +43,16 @@ public class UserResponseDTO {
 
     @DescriptionField(description = "입사일 (형태: YYYY-MM-dd)")
     private Date hireDate;
+
+    public UserResponseDTO(UserEntity userEntity) {
+        this.domainId = userEntity.getDomainId();
+        this.account = userEntity.getAccount();
+        this.userName = userEntity.getUserName();
+        this.userExternalKey = userEntity.getUserExternalKey();
+        this.authentication = userEntity.getAuthentication();
+        this.cellPhone = userEntity.getCellPhone();
+        this.email = userEntity.getEmail();
+        this.corporationAddress = userEntity.getCorporationAddress();
+        this.hireDate = userEntity.getHireDate();
+    }
 }

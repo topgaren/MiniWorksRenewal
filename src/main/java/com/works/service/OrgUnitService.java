@@ -3,7 +3,6 @@ package com.works.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.works.dto.OrgUnitRequestCreateDTO;
 import com.works.dto.OrgUnitResponseDTO;
 import com.works.entity.OrgUnitEntity;
 import com.works.exception.BadRequestException;
@@ -45,7 +44,7 @@ public class OrgUnitService {
         }
 
         OrgUnitEntity resultOrgUnitEntity = orgUnitMapper.getOrgUnitByExternalKey(domainId, orgExternalKey);
-        return resultOrgUnitEntity.toOrgUnitDTO();
+        return new OrgUnitResponseDTO(resultOrgUnitEntity);
     }
 
     /**
