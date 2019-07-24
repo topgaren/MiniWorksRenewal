@@ -22,8 +22,8 @@
     <div class="navbar" id="header">
         <h4 style="margin: 0;"><img src="/img/spring-boot-logo.svg" style="width: 50px; height: 50px;" /> Spring Boot Project - Mini Works Renewal</h4>
         <nav>
-            <button style="float: right;" type="button" class="btn btn-dark">Login</button>
-            <button style="float: right; margin-right: 10px;" type="button" class="btn btn-dark">View Chart</button>
+            <button type="button" class="btn btn-dark" id="loginBtn">Login</button>
+            <button type="button" class="btn btn-dark" id="viewChartBtn">View Chart</button>
         </nav>
     </div>
 
@@ -108,36 +108,38 @@
                     <div id="pathParameterTryingBox">
                         <table id="pathParameterTryingTable">
                             <tr th:each="pathParameterInfo : ${apiInfo.pathParameterInfoList}">
-                                <td><label th:for="${pathParameterInfo.parameter}" th:text="${pathParameterInfo.parameter}" style="margin-bottom: 0;"></label></td>
-                                <td><input class="path-parameter" th:id="${pathParameterInfo.parameter}" type="text" style="width: 400px; size: 12px;" /></td>
+                                <td><label th:for="${pathParameterInfo.parameter}" th:text="${pathParameterInfo.parameter}"></label></td>
+                                <td><input class="path-parameter" th:id="${pathParameterInfo.parameter}" type="text" /></td>
                             </tr>
                         </table>
                     </div>
-                </div>
+                </div><br/>
                 <!-- END Trying : Path Parameter -->
 
                 <!-- Trying : Request Body (if Necessary) -->
                 <div th:id="tryingRequestBody" th:if="${apiInfo.requestBodyInfo}">
                     <h6>Request Body</h6>
-                    <div id="requestBodyInputForm" style="width: 100%; height: 250px; border: 1px solid #D7D7D7"></div>
-                    <script src="/javascript/modelInputGenerator.js"></script>
+                    <div id="requestBodyInputForm" style="padding: 10px; width: 100%; height: 250px; border: 1px solid #D7D7D7;"></div>
+                    <script src="/javascript/makeRequestBodyInput.js"></script>
                     <script th:inline="javascript">
                         $(document).ready(function() {
-                            var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
-                            appendModel(requestBodyInfo, document.getElementById('requestBodyInputForm'));
+                           var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
+                           appendModel(requestBodyInfo, document.getElementById('requestBodyInputForm'));
                         });
                     </script>
                 </div>
                 <!-- END Trying : Request Body (if Necessary) -->
 
                 <!-- Trying : 'Send Request' Button -->
-                <button type="button" id="sendRequest" class="btn btn-dark" style="margin-top: 10px;">Send Request</button>
+                <button type="button" id="sendRequest" class="btn btn-dark"
+                        style="margin-top: 10px;">Send Request</button>
 
 
                 <!-- Trying : Response -->
                 <div>
                     <br/><h6>Response</h6>
-                    <textarea id="responseBodyTextArea" readonly="readonly" style="width: 100%; height: 250px; border: 1px solid #D7D7D7"></textarea>
+                    <textarea id="responseBodyTextArea" readonly="readonly"
+                              style="padding: 10px; width: 100%; height: 300px; border: 1px solid #D7D7D7;"></textarea>
                 </div>
                 <!-- END Trying : Response -->
             </div>
@@ -146,5 +148,39 @@
         <!-- END API Document + API Trying Tool -->
     </div>
     <!-- END Main Docuement & API Trying Tool -->
+
+
+    <!-- Send Request & Recieve Response -->
+    <script src="/javascript/makeAjaxObject.js"></script>
+    <script th:inline="JavaScript">
+        $(document).ready(function() {
+            // Send Request 버튼을 클릭하여 요청을 보내는 이벤트.
+            $('#sendRequest').click(function() {
+
+                // 요청 URL과 HTTP Method 정보를 얻는다.
+                var apiRequestURL = /*[[ ${apiInfo.requestURI} ]]*/ 'default';
+                var httpMethod = /*[[ ${apiInfo.httpMethod} ]]*/ 'default';
+
+                // Trying Tool의 Path Parameter 입력 부분에서 정보를 파싱하고 URL을 완성시킨다.
+                $('.path-parameter').each(function(index, element) {
+                    var pathParameter = element.id;
+                    apiRequestURL = apiRequestURL.replace("{" + pathParameter + "}", $('#' + pathParameter).val());
+                });
+
+                // Request Body 파싱
+                var parameterJSON = {};
+                $('.requestParameter').each(function(index, element) {
+                    parameterJSON[element.getAttribute("name")] = element.value;
+                });
+
+                // URL, HTTP Method, Request Body 데이터로 Ajax에 전달할 객체를 생성한다.
+                var ajaxObject = getAjaxObject(apiRequestURL, httpMethod, parameterJSON);
+
+                // Ajax를 통해 요청을 전송한다.
+                $.ajax(ajaxObject);
+            });
+        });
+    </script>
+    <!-- END Send Request & Recieve Response -->
 </body>
 </html>
