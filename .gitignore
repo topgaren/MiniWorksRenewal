@@ -30,3 +30,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Custom ###
+project_log/
