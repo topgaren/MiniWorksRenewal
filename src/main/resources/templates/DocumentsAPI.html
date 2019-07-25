@@ -105,13 +105,13 @@
                 <!-- Trying : Path Parameter -->
                 <div id="tryingPathParameter">
                     <h6>Path Parameters</h6>
-                    <div id="pathParameterTryingBox">
-                        <table id="pathParameterTryingTable">
-                            <tr th:each="pathParameterInfo : ${apiInfo.pathParameterInfoList}">
-                                <td><label th:for="${pathParameterInfo.parameter}" th:text="${pathParameterInfo.parameter}"></label></td>
-                                <td><input class="path-parameter" th:id="${pathParameterInfo.parameter}" type="text" /></td>
-                            </tr>
-                        </table>
+                    <div class="form-group" id="tryingPathParameterBox">
+                        <form>
+                            <div class="form-group" th:each="pathParameterInfo : ${apiInfo.pathParameterInfoList}">
+                                <label th:for="${pathParameterInfo.parameter}" th:text="${pathParameterInfo.parameter}"></label>
+                                <input class="form-control path-parameter" th:id="${pathParameterInfo.parameter}" type="text" />
+                            </div>
+                        </form>
                     </div>
                 </div><br/>
                 <!-- END Trying : Path Parameter -->
@@ -139,7 +139,8 @@
                 <div>
                     <br/><h6>Response</h6>
                     <textarea id="responseBodyTextArea" readonly="readonly"
-                              style="padding: 10px; width: 100%; height: 300px; border: 1px solid #D7D7D7;"></textarea>
+                              style="padding: 10px; width: 100%; height: 300px; border: 1px solid #D7D7D7;
+                                     font-family: Consolas,monaco,monospace; font-size: 14px;"></textarea>
                 </div>
                 <!-- END Trying : Response -->
             </div>

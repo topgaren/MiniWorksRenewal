@@ -8,7 +8,7 @@ function getAjaxObject(requestURL, httpMethod, requestData) {
 
     if(httpMethod == 'GET') {
         ajaxObject['success'] = function(data) {
-            $('#responseBodyTextArea').val(JSON.stringify(data, null, 6));
+            $('#responseBodyTextArea').val(JSON.stringify(data, null, 2));
         }
     }
 
@@ -21,7 +21,7 @@ function getAjaxObject(requestURL, httpMethod, requestData) {
     }
 
     ajaxObject['error'] = function(data) {
-        $("#responseBodyTextArea").val(JSON.stringify(data.responseJSON, null, 6));
+        $("#responseBodyTextArea").val(JSON.stringify(data.responseJSON, null, 2));
     }
 
     return ajaxObject;

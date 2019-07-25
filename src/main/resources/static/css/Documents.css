@@ -55,11 +55,14 @@
         color: white;
         border: 1px solid red;
         font-weight: bold;
+        font-size: 14px;
     }
 
     #methodAndURL > #URL {
         border: 1px solid #B1B1B1;
         padding-left: 10px;
+        font-family: 'Spiegel-Regular';
+        font-size: 14px;
     }
 
     #apiDocumentAndTryingTool {
@@ -99,23 +102,18 @@
         border: 1px solid #B1B1B1;
     }
 
-    #pathParameterTryingBox {
-        padding: 5px;
+    #tryingPathParameterBox {
+        padding: 8px 0px 0px 16px;
         border: 1px solid #D7D7D7;
     }
 
-    #pathParameterTryingTable {
-        border-spacing: 20px 5px;
-        border-collapse: separate;
+    #tryingPathParameterBox label {
+        margin-bottom: 8px;
     }
 
-    #pathParameterTryingTable label {
-        margin-bottom: 0;
-    }
-
-    #pathParameterTryingTable input {
+    #tryingPathParameterBox input {
         width: 400px;
-        font-size: 1rem;
+        size: 12px;
     }
 
     #requestBodyInputForm {

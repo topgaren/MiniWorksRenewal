@@ -6,7 +6,7 @@ function appendModel(dtoModel, targetDOM) {
     modelInput.innerText = "{ ";
 
     var modelInnerPadding = document.createElement('div');
-    modelInnerPadding.style.paddingLeft = '20px';
+    modelInnerPadding.style.paddingLeft = '40px';
     modelInput.append(modelInnerPadding);
 
     for(var i = 0; i < fieldInfoList.length; i++) {
