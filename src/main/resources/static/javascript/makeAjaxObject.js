@@ -1,4 +1,4 @@
-function getAjaxObject(requestURL, httpMethod, requestData) {
+function makeAjaxObject(requestURL, httpMethod, requestData) {
 
     var ajaxObject = {
         url: requestURL,

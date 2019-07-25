@@ -25,6 +25,8 @@ function appendField(field, targetDOM) {
 
     var paramName = document.createElement('span');
     paramName.innerText = '"' + field.parameter + '"';
+    paramName.style.fontFamily = 'Consolas,monaco,monospace';
+    paramName.style.fontSize = '14px';
     fieldInput.append(paramName);
 
     var colon = document.createElement('span');
@@ -43,6 +45,7 @@ function appendField(field, targetDOM) {
     fieldTextArea.style.padding = '0px';
     fieldTextArea.style.width = '250px';
     fieldTextArea.style.height = '16px';
+    fieldTextArea.style.fontFamily = 'Consolas,monaco,monospace';
     fieldTextArea.style.fontSize = '14px';
     fieldTextArea.style.border = 'none';
     fieldTextArea.style.borderBottom = '1px solid #ccc';

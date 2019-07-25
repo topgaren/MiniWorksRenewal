@@ -65,7 +65,7 @@
                 <script th:inline="javascript">
                     $(document).ready(function() {
                         var ppfieldInfoList = /*[[ ${apiInfo.pathParameterInfoList} ]]*/ 'default';
-                        var documentOutput = makeParameterTable(ppfieldInfoList, 'pathParameterTable');
+                        var documentOutput = makeParameterTable(ppfieldInfoList, true, 'pathParameterTable');
                         $('#documentPathParameter').append(documentOutput);
                     });
                 </script>
@@ -78,7 +78,7 @@
                 <script th:inline="javascript">
                     $(document).ready(function() {
                         var rqstfieldInfoList = /*[[ ${apiInfo.requestBodyInfo.fieldInfoList} ]]*/ 'default';
-                        var documentOutput = makeParameterTable(rqstfieldInfoList, 'requestBodyTable');
+                        var documentOutput = makeParameterTable(rqstfieldInfoList, true, 'requestBodyTable');
                         $('#documentRequestBody').append(documentOutput);
                     });
                 </script>
@@ -91,7 +91,7 @@
                 <script th:inline="javascript">
                     $(document).ready(function() {
                         var rspsfieldInfoList = /*[[ ${apiInfo.responseBodyInfo.fieldInfoList} ]]*/ 'default';
-                        var documentOutput = makeParameterTable(rspsfieldInfoList, 'responseBodyTable');
+                        var documentOutput = makeParameterTable(rspsfieldInfoList, false, 'responseBodyTable');
                         $('#documentResponseBody').append(documentOutput);
                     });
                 </script>
@@ -175,7 +175,7 @@
                 });
 
                 // URL, HTTP Method, Request Body 데이터로 Ajax에 전달할 객체를 생성한다.
-                var ajaxObject = getAjaxObject(apiRequestURL, httpMethod, parameterJSON);
+                var ajaxObject = makeAjaxObject(apiRequestURL, httpMethod, parameterJSON);
 
                 // Ajax를 통해 요청을 전송한다.
                 $.ajax(ajaxObject);
