@@ -1,7 +1,7 @@
 function makeParameterTable(parameterInfoList, isRequired, tableId) {
 
     var font = document.createElement('font');
-    font.style.size = 2;
+    font.setAttribute('size', '2');
 
     var table = document.createElement('table');
     table.className = 'field-table';
@@ -16,20 +16,24 @@ function makeParameterTable(parameterInfoList, isRequired, tableId) {
 
     var parameterTh = document.createElement('th');
     parameterTh.innerText = 'Parameter';
+    parameterTh.style.width = isRequired ? "16%" : "20%";
     theadTr.append(parameterTh);
 
     var typeTh = document.createElement('th');
     typeTh.innerText = 'Type';
+    typeTh.style.width = isRequired ? "16%" : "20%";
     theadTr.append(typeTh);
 
     if(isRequired == true) {
         var requiredTh = document.createElement('th');
         requiredTh.innerText = 'Required';
+        requiredTh.style.width = "16%";
         theadTr.append(requiredTh);
     }
 
     var descriptionTh = document.createElement('th');
     descriptionTh.innerText = "Description";
+    descriptionTh.style.width = isRequired ? "52%" : "60%";
     theadTr.append(descriptionTh);
 
     tbody = document.createElement('tbody');
@@ -48,7 +52,7 @@ function makeParameterTable(parameterInfoList, isRequired, tableId) {
         tbodyTr.append(typeTd);
 
         if(isRequired == true) {
-            var requiredTd = document.createElement('tr');
+            var requiredTd = document.createElement('td');
             requiredTd.innerText = parameterInfoList[i].required;
             tbodyTr.append(requiredTd);
         }
