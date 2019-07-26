@@ -2,6 +2,7 @@ package com.works.document;
 
 import com.works.annotation.DTO;
 import com.works.annotation.DescriptionAPI;
+import com.works.annotation.DescriptionPathParam;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,7 +57,8 @@ public class APIInfo {
                 String parameter = apiParameter.getAnnotation(PathVariable.class).name();
                 String type = apiParameter.getType().getName();
                 String simpleType = apiParameter.getType().getSimpleName();
-                pathParameterInfoList.add(new FieldInfo(parameter, type, simpleType, true, "DEFAULT DESCRIPTION"));
+                String description = apiParameter.getAnnotation(DescriptionPathParam.class).value();
+                pathParameterInfoList.add(new FieldInfo(parameter, type, simpleType, true, description));
             }
 
             // @RequestBody 어노테이션을 사용하는 파라미터 --> JSON 형태로 전달한 DTO
