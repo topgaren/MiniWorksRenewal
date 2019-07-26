@@ -1,99 +1,143 @@
-function appendModel(dtoModel, targetDOM) {
+/**
+    <div>
+        <span>"account"</span>  <span> : </span>
+        <div style="display: inline">
+            <span>"</span>  <textarea class="requestParameter" name="account"></textarea>  <span>"</span>
+        </div>
+        <img class="icon question-icon" id="questionIcon" src="/img/Q.png" />
+        <img class="icon delete-icon" id="deleteIcon" src="/img/X/png" onclick="deleteIconClickEvent()" />
+    </div>
+**/
 
-    var fieldInfoList = dtoModel.fieldInfoList;
 
-    var modelInput = document.createElement('div');
-    modelInput.innerText = "{ ";
+/**
+ * textarea를 생성하여 반환한다.
+ * 생성된 textarea는 화면에서 다음과 같이 출력된다.
+ * "______________"
+ *
+ * @param {String} name : 파라미터의 이름.
+ * @param {Boolean} isInline : textarea를 json "key"와 수평으로 배치 여부.
+ */
+function makeTextArea(name, isInline) {
 
-    var modelInnerPadding = document.createElement('div');
-    modelInnerPadding.style.paddingLeft = '20px';
-    modelInput.append(modelInnerPadding);
-
-    for(var i = 0; i < fieldInfoList.length; i++) {
-        appendField(fieldInfoList[i], modelInnerPadding);
+    var div = document.createElement('div');
+    if(isInline) {
+        div.style.display = 'inline';
     }
 
+    var spanOpenQuote = document.createElement('span');
+    var spanCloseQuote = document.createElement('span');
+    spanOpenQuote.innerText = '"';
+    spanCloseQuote.innerText = '"';
+
+    var textArea = document.createElement('textarea');
+    textArea.className = "requestParameter";
+    textArea.name = name;
+    textArea.style.padding = '0px';
+    textArea.style.width = '250px';
+    textArea.style.height = '16px';
+    textArea.style.fontSize = '14px';
+    textArea.style.fontFamily = 'Consolas,monaco,monospace';
+    textArea.style.border = 'none';
+    textArea.style.borderBottom = '1px solid #ccc';
+
+    div.append(spanOpenQuote, textArea, spanCloseQuote);
+
+    return div;
+}
+
+/**
+ * 필드를 입력받을 수 있는 화면 구성 DOM 객체를 생성한다.
+ * 필드의 경우는 다음 4가지 중 하나에 해당한다.
+ *   Case 1 : List도 Model도 아닌 일반 필드.
+ *   Case 2 : 일반 필드의 List.
+ *   Case 3 : 단순 (Nested) Model.
+ *   Case 4 : (Nested) Model의 List.
+ *
+ * @param {com.works.document.FieldInfo} field : 필드 정보를 갖는 객체.
+ */
+function makeFieldInput(field) {
+
+    var div = document.createElement('div');
+
+    var spanParameter = document.createElement('span');
+    spanParameter.innerText = '"' + field.parameter + '"';
+    var spanColon = document.createElement('span');
+    spanColon.innerText = " : ";
+    div.append(spanParameter, spanColon);
+
+    var iconQuestion = document.createElement('img');
+    var iconDelete = document.createElement('img');
+    var iconPlus = document.createElement('img');
+    iconQuestion.src = '/img/Q.png';
+    iconDelete.src = '/img/X.png';
+    iconPlus.src = '/img/Plus.png';
+
+    iconDelete.setAttribute("onclick", "deleteIconClickEvent()");
+
+    if(field.list == false) {
+        if(field.model == false) {
+            // Case 1: 리스트도 아니고 Model도 아닌 일반 필드
+            var textArea = makeTextArea(field.parameter, true);
+            div.append(textArea, iconQuestion, iconDelete);
+        } else {
+            // Case 2: 단일 (Nested) Model 추가
+            div.append(iconQuestion, iconDelete);
+            // 모델 추가 코드
+        }
+    } else {
+        if(field.model == false) {
+            // Case 3: 단순 필드 리스트
+            div.append(iconQuestion, iconDelete);
+            // 리스트 추가 코드
+        } else {
+            // Case 4: (Nested) Model의 리스트
+            div.append(iconQuestion, iconDelete);
+            // 모델 리스트 추가 코드
+        }
+    }
+
+    return div;
+}
+
+/**
+ * Model을 JSON 형태로 입력받을 수 있는 DOM 객체를 생성한다.
+ *
+ * @param {com.works.document.DTOInfo} model : 모델 정보를 갖는 객체.
+ */
+function makeModelInput(model) {
+
+    var fieldList = model.fieldInfoList;
+
+    // JSON의 시작을 나타내는 Open Bracket.
+    var divOuter = document.createElement('div');
+    divOuter.innerText = '{ ';
+
+    // 객체 내 필드의 들여쓰기(20px)를 위한 div 태그.
+    var divInner = document.createElement('div');
+    divInner.style.paddingLeft = '20px';
+    divOuter.append(divInner);
+
+    // 모델 내 모든 필드를 조회하며 입력이 가능한 태그를 추가.
+    for(var i = 0; i < fieldList.length; i++) {
+        divInner.append(makeFieldInput(fieldList[i]));
+    }
+
+    // JSON의 끝을 나타내는 Close Bracket.
     var modelCloseBracket = document.createElement('div');
     modelCloseBracket.innerText = '}';
-    modelInput.append(modelCloseBracket);
+    divOuter.append(modelCloseBracket);
 
-    targetDOM.append(modelInput);
+    return divOuter;
 }
 
-
-function appendField(field, targetDOM) {
-
-    /**
-    <div>
-        <span>"account"</span>
-        <span> : </span>
-        <div>
-            <span>"</span>
-            <textarea></textarea>
-            <span>"</span>
-        </div>
-        <img 'Q' />
-        <img 'X' />
-    </div>
-    **/
-
-    var fieldInput = document.createElement('div');
-
-    var paramName = document.createElement('span');
-    paramName.innerText = '"' + field.parameter + '"';
-    paramName.style.fontSize = '14px';
-    paramName.style.fontFamily = 'Consolas,monaco,monospace';
-    fieldInput.append(paramName);
-
-    var colon = document.createElement('span');
-    colon.innerText = ' : ';
-    fieldInput.append(colon);
-
-    var textAreaWithQuotes = document.createElement('div')
-    textAreaWithQuotes.style.display = 'inline';
-
-    var openQuote = document.createElement('span');
-    openQuote.innerText = '"';
-    textAreaWithQuotes.append(openQuote);
-
-    var fieldTextArea = document.createElement('textarea');
-    fieldTextArea.className = 'requestParameter';
-    fieldTextArea.setAttribute('name', field.parameter)
-    fieldTextArea.style.padding = '0px';
-    fieldTextArea.style.width = '250px';
-    fieldTextArea.style.height = '16px';
-    fieldTextArea.style.fontSize = '14px';
-    fieldTextArea.style.fontFamily = 'Consolas,monaco,monospace';
-    fieldTextArea.style.border = 'none';
-    fieldTextArea.style.borderBottom = '1px solid #ccc';
-    textAreaWithQuotes.append(fieldTextArea);
-
-    var closeQuote = document.createElement('span');
-    closeQuote.innerText = '"';
-    textAreaWithQuotes.append(closeQuote);
-
-    fieldInput.append(textAreaWithQuotes);
-
-    var questionIcon = document.createElement('img');
-    questionIcon.className = 'icon question-icon';
-    questionIcon.id = field.parameter + 'QuesionIcon';
-    questionIcon.src = '/img/Q.png';
-    questionIcon.style.marginLeft = '2px';
-    fieldInput.append(questionIcon);
-
-    var deleteIcon = document.createElement('img');
-    deleteIcon.className = 'icon delete-icon';
-    deleteIcon.id = field.parameter + 'DeleteIcon';
-    deleteIcon.src = '/img/X.png';
-    deleteIcon.style.marginLeft = '4px';
-    deleteIcon.setAttribute("onclick", "deleteIconEvent()");
-    fieldInput.append(deleteIcon);
-
-    targetDOM.append(fieldInput);
-}
-
-
-function deleteIconEvent() {
+/**
+ * Delete Icon을 클릭했을 때 발생하는 Event Handler.
+ * 해당 필드를 삭제하고 select-option에 추가한다.
+ */
+function deleteIconClickEvent() {
     deleteTarget = event.target.parentElement;
     deleteTarget.remove();
+
+    // select에 option으로 추가하는 코드
 }

@@ -58,7 +58,7 @@ public class APIInfo {
                 String type = apiParameter.getType().getName();
                 String simpleType = apiParameter.getType().getSimpleName();
                 String description = apiParameter.getAnnotation(DescriptionPathParam.class).value();
-                pathParameterInfoList.add(new FieldInfo(parameter, type, simpleType, true, description));
+                pathParameterInfoList.add(new FieldInfo(parameter, type, simpleType, true, description, false, false));
             }
 
             // @RequestBody 어노테이션을 사용하는 파라미터 --> JSON 형태로 전달한 DTO

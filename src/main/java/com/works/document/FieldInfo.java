@@ -17,6 +17,6 @@ public class FieldInfo {
     private boolean required;
     private String description;
 
-    private boolean isList;
-    private boolean isModel;
+    private boolean list;   // 필드가 리스트 형태인지
+    private boolean model;  // 타입이 DTO 객체인지
 }

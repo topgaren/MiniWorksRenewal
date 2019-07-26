@@ -120,11 +120,12 @@
                 <div th:id="tryingRequestBody" th:if="${apiInfo.requestBodyInfo}">
                     <h6>Request Body</h6>
                     <div id="requestBodyInputForm"></div>
-                    <script src="/javascript/makeRequestBodyInput.js?ver=20190726-26"></script>
+                    <script src="/javascript/makeRequestBodyInput.js?ver=20190727-7"></script>
                     <script th:inline="javascript">
                         $(document).ready(function() {
                            var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
-                           appendModel(requestBodyInfo, document.getElementById('requestBodyInputForm'));
+                           var modelInput = makeModelInput(requestBodyInfo);
+                           document.getElementById('requestBodyInputForm').append(modelInput);
                         });
                     </script>
                 </div>

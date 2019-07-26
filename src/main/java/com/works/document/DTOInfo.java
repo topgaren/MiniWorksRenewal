@@ -56,12 +56,12 @@ public class DTOInfo {
             String simpleType = field.getType().getSimpleName();
             boolean required = false;
             String description = field.getAnnotation(DescriptionField.class).description();
-            boolean isList = false;
-            boolean isModel = false;
+            boolean list = false;
+            boolean model = false;
 
             // 필드 중 리스트가 있는 경우
             if(simpleType.equals("List")) {
-                isList = true;
+                list = true;
                 parameter += "[]";
 
                 // 어떤 타입의 리스트인지 추가적으로 확인한다.
@@ -70,18 +70,19 @@ public class DTOInfo {
                 type = cls.getName();
             }
 
+            // 필드가 Nested Model 인지 확인
             if(!field.getType().isPrimitive()) {
                 Class<?> nestedObject = Class.forName(type);
                 if(nestedObject.isAnnotationPresent(DTO.class)) {
-                    isModel = true;
+                    model = true;
                 }
             }
 
-            // 설정한 필드 값에 따라 VariableInfo 객체 생성 후 리스트에 추가.
-            fieldInfoList.add(new FieldInfo(parameter, type, simpleType, required, description, isList, isModel));
+            // 설정한 필드 값에 따라 FieldInfo 객체 생성 후 리스트에 추가.
+            fieldInfoList.add(new FieldInfo(parameter, type, simpleType, required, description, list, model));
 
             // 추가한 필드가 API DTO Nested Object인 경우 해당 Object의 모든 필드 값을 파싱(재귀 호출 형태로).
-            if(isModel) {
+            if(model) {
                 fieldInfoList.addAll(getAllVariableInfo(Class.forName(type), parameter + "."));
             }
 
