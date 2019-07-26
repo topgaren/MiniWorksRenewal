@@ -16,4 +16,7 @@ public class FieldInfo {
     private String simpleType;
     private boolean required;
     private String description;
+
+    private boolean isList;
+    private boolean isModel;
 }

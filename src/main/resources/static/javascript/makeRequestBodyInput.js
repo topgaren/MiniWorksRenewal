@@ -22,6 +22,21 @@ function appendModel(dtoModel, targetDOM) {
 
 
 function appendField(field, targetDOM) {
+
+    /**
+    <div>
+        <span>"account"</span>
+        <span> : </span>
+        <div>
+            <span>"</span>
+            <textarea></textarea>
+            <span>"</span>
+        </div>
+        <img 'Q' />
+        <img 'X' />
+    </div>
+    **/
+
     var fieldInput = document.createElement('div');
 
     var paramName = document.createElement('span');
@@ -60,18 +75,25 @@ function appendField(field, targetDOM) {
     fieldInput.append(textAreaWithQuotes);
 
     var questionIcon = document.createElement('img');
-    questionIcon.className = 'question-icon';
+    questionIcon.className = 'icon question-icon';
     questionIcon.id = field.parameter + 'QuesionIcon';
     questionIcon.src = '/img/Q.png';
     questionIcon.style.marginLeft = '2px';
     fieldInput.append(questionIcon);
 
     var deleteIcon = document.createElement('img');
-    deleteIcon.className = 'delete-icon';
+    deleteIcon.className = 'icon delete-icon';
     deleteIcon.id = field.parameter + 'DeleteIcon';
     deleteIcon.src = '/img/X.png';
-    deleteIcon.style.marginLeft = '2px';
+    deleteIcon.style.marginLeft = '4px';
+    deleteIcon.setAttribute("onclick", "deleteIconEvent()");
     fieldInput.append(deleteIcon);
 
     targetDOM.append(fieldInput);
+}
+
+
+function deleteIconEvent() {
+    deleteTarget = event.target.parentElement;
+    deleteTarget.remove();
 }
