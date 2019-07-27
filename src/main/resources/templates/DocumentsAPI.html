@@ -15,7 +15,7 @@
     crossorigin="anonymous"></script>
 
     <!--custom css-->
-    <link rel="stylesheet" href="/css/Documents.css?ver=20190726-7" type="text/css">
+    <link rel="stylesheet" href="/css/Documents.css?ver=20190726-8" type="text/css">
 </head>
 <body>
     <!-- Header(Fixed) -->
@@ -120,7 +120,7 @@
                 <div th:id="tryingRequestBody" th:if="${apiInfo.requestBodyInfo}">
                     <h6>Request Body</h6>
                     <div id="requestBodyInputForm"></div>
-                    <script src="/javascript/makeRequestBodyInput.js?ver=20190727-7"></script>
+                    <script src="/javascript/makeRequestBodyInput.js?ver=20190727-12"></script>
                     <script th:inline="javascript">
                         $(document).ready(function() {
                            var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';

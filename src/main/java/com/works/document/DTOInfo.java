@@ -52,6 +52,7 @@ public class DTOInfo {
 
             // VariableInfo 기본 필드 값 설정.
             String parameter = nestedObjectState + field.getName();
+            String fieldName = field.getName();
             String type = field.getType().getName();
             String simpleType = field.getType().getSimpleName();
             boolean required = false;
@@ -79,7 +80,7 @@ public class DTOInfo {
             }
 
             // 설정한 필드 값에 따라 FieldInfo 객체 생성 후 리스트에 추가.
-            fieldInfoList.add(new FieldInfo(parameter, type, simpleType, required, description, list, model));
+            fieldInfoList.add(new FieldInfo(parameter, fieldName, type, simpleType, required, description, list, model));
 
             // 추가한 필드가 API DTO Nested Object인 경우 해당 Object의 모든 필드 값을 파싱(재귀 호출 형태로).
             if(model) {

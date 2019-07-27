@@ -15,10 +15,11 @@
  * 생성된 textarea는 화면에서 다음과 같이 출력된다.
  * "______________"
  *
- * @param {String} name : 파라미터의 이름.
  * @param {Boolean} isInline : textarea를 json "key"와 수평으로 배치 여부.
+ * @param {Boolean} inList : List 내부에 생성될 textarea인지 여부.
+ * @param {String} name : 파라미터의 이름.
  */
-function makeTextArea(name, isInline) {
+function makeTextArea(isInline, inList, name) {
 
     var div = document.createElement('div');
     if(isInline) {
@@ -43,6 +44,21 @@ function makeTextArea(name, isInline) {
 
     div.append(spanOpenQuote, textArea, spanCloseQuote);
 
+    // List 내부에 생성된다면 삭제 아이콘을 추가하여 반환한다.
+    if(inList) {
+        var divOuter = document.createElement('div');
+        var iconDelete = document.createElement('img');
+        iconDelete.className = 'icon icon-delete';
+        iconDelete.src = '/img/X.png';
+        divOuter.append(div, iconDelete);
+        iconDelete.onclick = function() {
+            var deleteTarget = event.target.parentElement;
+            deleteTarget.remove();
+        }
+
+        return divOuter;
+    }
+
     return div;
 }
 
@@ -60,25 +76,32 @@ function makeFieldInput(field) {
 
     var div = document.createElement('div');
 
+    // "[parameter]" :
     var spanParameter = document.createElement('span');
-    spanParameter.innerText = '"' + field.parameter + '"';
+    spanParameter.innerText = '"' + field.fieldName + '"';
+    spanParameter.style.fontFamily = 'Consolas,monaco,monospace'
+    spanParameter.style.fontSize = '14px';
     var spanColon = document.createElement('span');
     spanColon.innerText = " : ";
     div.append(spanParameter, spanColon);
 
+    // 아이콘 생성
     var iconQuestion = document.createElement('img');
-    var iconDelete = document.createElement('img');
-    var iconPlus = document.createElement('img');
+    iconQuestion.className = 'icon icon-question';
+    iconQuestion.style.paddingLeft = '4px';
     iconQuestion.src = '/img/Q.png';
+
+    var iconDelete = document.createElement('img');
+    iconDelete.className = 'icon icon-delete';
+    iconDelete.style.paddingLeft = '4px';
     iconDelete.src = '/img/X.png';
-    iconPlus.src = '/img/Plus.png';
 
     iconDelete.setAttribute("onclick", "deleteIconClickEvent()");
 
     if(field.list == false) {
         if(field.model == false) {
             // Case 1: 리스트도 아니고 Model도 아닌 일반 필드
-            var textArea = makeTextArea(field.parameter, true);
+            var textArea = makeTextArea(true, false, field.fieldName);
             div.append(textArea, iconQuestion, iconDelete);
         } else {
             // Case 2: 단일 (Nested) Model 추가
@@ -90,6 +113,7 @@ function makeFieldInput(field) {
             // Case 3: 단순 필드 리스트
             div.append(iconQuestion, iconDelete);
             // 리스트 추가 코드
+            div.append(makeListInput());
         } else {
             // Case 4: (Nested) Model의 리스트
             div.append(iconQuestion, iconDelete);
@@ -130,6 +154,57 @@ function makeModelInput(model) {
 
     return divOuter;
 }
+
+
+/**
+ * List를 JSON 형태로 입력받을 수 있는 DOM 객체를 생성한다.
+ *
+ * @param {com.works.document.DTOInfo} model : Model의 List를 생성할 경우 해당 model을 전달.
+ */
+function makeListInput(model) {
+
+    // JSON 리스트의 시작을 나타내는 Open Bracket.
+    var divOuter = document.createElement('div');
+    divOuter.innerText = '[ ';
+
+    // 객체 내 필드의 들여쓰기(20px)를 위한 div 태그.
+    var divInner = document.createElement('div');
+    divInner.style.paddingLeft = '20px';
+    divOuter.append(divInner);
+
+    if(model) {
+        // 파라미터 model을 전달할 경우에만 Model Input 생성
+        var modelInput = makeModelInput(model);
+        divInner.append(modelInput);
+    } else {
+        // 파라미터 model을 전달하지 않으면 일반 textarea 생성
+        var textArea = makeTextArea(false, true); // Nonamed
+        divInner.append(textArea);
+    }
+
+    // Plus 버튼 생성
+    var iconPlus = document.createElement('img');
+    iconPlus.className = 'icon icon-plus';
+    iconPlus.src = '/img/Plus.png';
+    divInner.append(iconPlus);
+
+    iconPlus.onclick = function(event, model) {
+        if(model) {
+            alert(model.simpleModelName);
+        } else {
+            var textArea = makeTextArea(false, true);
+            event.target.before(textArea);
+        }
+    };
+
+    // JSON 리스트의 끝을 나타내는 Close Bracket.
+    var listCloseBracket = document.createElement('div');
+    listCloseBracket.innerText = ']';
+    divOuter.append(listCloseBracket);
+
+    return divOuter;
+}
+
 
 /**
  * Delete Icon을 클릭했을 때 발생하는 Event Handler.

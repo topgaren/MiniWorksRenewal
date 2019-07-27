@@ -55,10 +55,11 @@ public class APIInfo {
             // @PathVariable 어노테이션을 사용하는 파라미터 --> URI를 통해 전달된 파라미터
             if(apiParameter.isAnnotationPresent(PathVariable.class)) {
                 String parameter = apiParameter.getAnnotation(PathVariable.class).name();
+                String fieldName = parameter;
                 String type = apiParameter.getType().getName();
                 String simpleType = apiParameter.getType().getSimpleName();
                 String description = apiParameter.getAnnotation(DescriptionPathParam.class).value();
-                pathParameterInfoList.add(new FieldInfo(parameter, type, simpleType, true, description, false, false));
+                pathParameterInfoList.add(new FieldInfo(parameter, fieldName, type, simpleType, true, description, false, false));
             }
 
             // @RequestBody 어노테이션을 사용하는 파라미터 --> JSON 형태로 전달한 DTO
