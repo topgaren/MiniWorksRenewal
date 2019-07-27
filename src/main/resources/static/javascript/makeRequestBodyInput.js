@@ -78,7 +78,7 @@ function makeFieldInput(field) {
 
     // "[parameter]" :
     var spanParameter = document.createElement('span');
-    spanParameter.innerText = '"' + field.fieldName + '"';
+    spanParameter.innerText = '"' + field.parameter + '"';
     spanParameter.style.fontFamily = 'Consolas,monaco,monospace'
     spanParameter.style.fontSize = '14px';
     var spanColon = document.createElement('span');
@@ -101,7 +101,7 @@ function makeFieldInput(field) {
     if(field.list == false) {
         if(field.model == false) {
             // Case 1: 리스트도 아니고 Model도 아닌 일반 필드
-            var textArea = makeTextArea(true, false, field.fieldName);
+            var textArea = makeTextArea(true, false, field.parameter);
             div.append(textArea, iconQuestion, iconDelete);
         } else {
             // Case 2: 단일 (Nested) Model 추가

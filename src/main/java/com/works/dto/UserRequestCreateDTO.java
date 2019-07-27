@@ -39,6 +39,9 @@ public class UserRequestCreateDTO {
     @DescriptionField(description = "입사일 (형태: YYYY-MM-dd)")
     private Date hireDate;
 
+    @DescriptionField(description = "구성원이 속한 조직")
+    private OrgUnitRequestCreateDTO organizations; // Nested Model Test를 위해 임시로 추가한 필드.
+
     public UserEntity toUserEntity() {
         // UserEntity에만 존재하는 필드는 0 또는 null로 초기화.
         return new UserEntity(0, 0, account, userName, null, authentication,

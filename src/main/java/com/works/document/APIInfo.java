@@ -22,17 +22,17 @@ import java.util.List;
 @Setter
 public class APIInfo {
 
-    private String apiNameKorVer;
-    private String apiDescription;
-    private String requestURI;
-    private String httpMethod;
-    private String apiResponse;
-    private int apiCode;
+    private String apiNameKorVer;   // API 한글 이름.
+    private String apiDescription;  // API 개요.
+    private String requestURI;      // API 요청 URI.
+    private String httpMethod;      // HTTP Method
+    private String apiResponse;     // API 응답에 관한 설명.
+    private int apiCode;            // API 고유 번호.
 
-    private List<FieldInfo> pathParameterInfoList;
+    private List<FieldInfo> pathParameterInfoList;  // Path parameter에 전달되는 field 정보.
 
-    private DTOInfo requestBodyInfo;
-    private DTOInfo responseBodyInfo;
+    private DTOInfo requestBodyInfo;    // Request Body에 전달되어야 하는 JSON 객체의 정보.
+    private DTOInfo responseBodyInfo;   // Response Body에 전달되는 JSON 객체의 정보.
 
     public APIInfo(Method api) throws Exception {
 
@@ -44,7 +44,6 @@ public class APIInfo {
         apiResponse = api.getAnnotation(DescriptionAPI.class).response();
         apiCode = api.getAnnotation(DescriptionAPI.class).apiCode();
 
-
         requestBodyInfo = null;
         responseBodyInfo = null;
 
@@ -54,12 +53,12 @@ public class APIInfo {
 
             // @PathVariable 어노테이션을 사용하는 파라미터 --> URI를 통해 전달된 파라미터
             if(apiParameter.isAnnotationPresent(PathVariable.class)) {
-                String parameter = apiParameter.getAnnotation(PathVariable.class).name();
-                String fieldName = parameter;
-                String type = apiParameter.getType().getName();
-                String simpleType = apiParameter.getType().getSimpleName();
-                String description = apiParameter.getAnnotation(DescriptionPathParam.class).value();
-                pathParameterInfoList.add(new FieldInfo(parameter, fieldName, type, simpleType, true, description, false, false));
+                FieldInfo parameterInfo = new FieldInfo();
+                parameterInfo.setParameter(apiParameter.getAnnotation(PathVariable.class).name());
+                parameterInfo.setType(apiParameter.getType().getName());
+                parameterInfo.setSimpleType(apiParameter.getType().getSimpleName());
+                parameterInfo.setDescription(apiParameter.getAnnotation(DescriptionPathParam.class).value());
+                pathParameterInfoList.add(parameterInfo);
             }
 
             // @RequestBody 어노테이션을 사용하는 파라미터 --> JSON 형태로 전달한 DTO

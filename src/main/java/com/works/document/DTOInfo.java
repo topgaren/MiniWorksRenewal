@@ -18,9 +18,10 @@ import java.util.List;
 @Setter
 public class DTOInfo {
 
-    private String modelName;
-    private String simpleModelName;
-    private List<FieldInfo> fieldInfoList;
+    private String modelName;               // Package 경로를 포함한 DTO 이름.
+    private String simpleModelName;         // Package 경로가 생략된 DTO 이름.
+    private List<FieldInfo> fieldInfoList;  // DTO 내의 필드 정보를 저장할 리스트.
+    private List<DTOInfo> nestedDTOList;    // 필드가 Nested DTO일 경우 해당 DTO 정보를 저장할 리스트.
 
     /**
      * DTOInfo 클래스의 생성자.
@@ -32,63 +33,44 @@ public class DTOInfo {
 
         modelName = dtoClass.getName();
         simpleModelName = dtoClass.getSimpleName();
-        fieldInfoList = getAllVariableInfo(dtoClass, "");
-    }
 
-    /**
-     * 클래스의 모든 필드 정보를 파싱한다.
-     *
-     * @param dtoClass : 정보 파싱 대상 DTO 클래스.
-     * @param nestedObjectState : 객체 중첩의 정도를 나타내는 정보.
-     * @return : VariableInfo 객체의 리스트를 반환한다.
-     * @throws Exception
-     */
-    public List<FieldInfo> getAllVariableInfo(Class<?> dtoClass, String nestedObjectState) throws Exception {
+        fieldInfoList = new ArrayList<>();
+        nestedDTOList = new ArrayList<>();
 
-        List<FieldInfo> fieldInfoList = new ArrayList<>();
+        int nestedDTOIndex = 0;
 
         for(Field field : dtoClass.getDeclaredFields()) {
             field.setAccessible(true);
 
             // VariableInfo 기본 필드 값 설정.
-            String parameter = nestedObjectState + field.getName();
-            String fieldName = field.getName();
-            String type = field.getType().getName();
-            String simpleType = field.getType().getSimpleName();
-            boolean required = false;
-            String description = field.getAnnotation(DescriptionField.class).description();
-            boolean list = false;
-            boolean model = false;
+            FieldInfo fieldInfo = new FieldInfo();
+            fieldInfo.setParameter(field.getName());
+            fieldInfo.setType(field.getType().getName());
+            fieldInfo.setSimpleType(field.getType().getSimpleName());
+            fieldInfo.setDescription(field.getAnnotation(DescriptionField.class).description());
 
-            // 필드 중 리스트가 있는 경우
-            if(simpleType.equals("List")) {
-                list = true;
-                parameter += "[]";
+            // 필드가 리스트(List)인 경우
+            if(fieldInfo.getSimpleType().equals("List")) {
+                fieldInfo.setList(true);
 
-                // 어떤 타입의 리스트인지 추가적으로 확인한다.
+                // 리스트 내의 타입을 추가적으로 확인.
                 ParameterizedType pt = (ParameterizedType)field.getGenericType();
-                Class<?> cls = (Class<?>)pt.getActualTypeArguments()[0];
-                type = cls.getName();
+                Class<?> classInList = (Class<?>)pt.getActualTypeArguments()[0];
+                fieldInfo.setType(classInList.getName());
             }
 
-            // 필드가 Nested Model 인지 확인
+            // 필드 타입이 또 다른 DTO인지 확인.
             if(!field.getType().isPrimitive()) {
-                Class<?> nestedObject = Class.forName(type);
+                Class<?> nestedObject = Class.forName(fieldInfo.getType());
                 if(nestedObject.isAnnotationPresent(DTO.class)) {
-                    model = true;
+                    fieldInfo.setModel(true);
+                    fieldInfo.setNestedDTOIndex(nestedDTOIndex);
+                    nestedDTOList.add(new DTOInfo(nestedObject));
+                    nestedDTOIndex++;
                 }
             }
 
-            // 설정한 필드 값에 따라 FieldInfo 객체 생성 후 리스트에 추가.
-            fieldInfoList.add(new FieldInfo(parameter, fieldName, type, simpleType, required, description, list, model));
-
-            // 추가한 필드가 API DTO Nested Object인 경우 해당 Object의 모든 필드 값을 파싱(재귀 호출 형태로).
-            if(model) {
-                fieldInfoList.addAll(getAllVariableInfo(Class.forName(type), parameter + "."));
-            }
-
+            fieldInfoList.add(fieldInfo);
         }
-
-        return fieldInfoList;
     }
 }

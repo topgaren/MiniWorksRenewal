@@ -57,7 +57,7 @@
             <h2 th:text="${apiInfo.apiNameKorVer}"></h2>
             <h6 th:text="${apiInfo.apiDescription}"></h6><br/>
 
-            <script src="/javascript/makeParameterTable.js?ver=20190726-1"></script>
+            <script src="/javascript/makeParameterTable.js?ver=20190727-24"></script>
 
             <!-- Path Parameter Document -->
             <div id="documentPathParameter">
@@ -77,8 +77,9 @@
                 <br/><h5>Request Body</h5>
                 <script th:inline="javascript">
                     $(document).ready(function() {
-                        var rqstfieldInfoList = /*[[ ${apiInfo.requestBodyInfo.fieldInfoList} ]]*/ 'default';
-                        var documentOutput = makeParameterTable(rqstfieldInfoList, true, 'requestBodyTable');
+                        var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
+                        var requestBodyFieldInfoList = makeFieldInfoListFromModel(requestBodyInfo);
+                        var documentOutput = makeParameterTable(requestBodyFieldInfoList, true, 'requestBodyTable');
                         $('#documentRequestBody').append(documentOutput);
                     });
                 </script>
@@ -90,8 +91,9 @@
                 <br/><h5>Response</h5>
                 <script th:inline="javascript">
                     $(document).ready(function() {
-                        var rspsfieldInfoList = /*[[ ${apiInfo.responseBodyInfo.fieldInfoList} ]]*/ 'default';
-                        var documentOutput = makeParameterTable(rspsfieldInfoList, false, 'responseBodyTable');
+                        var responseBodyInfo = /*[[ ${apiInfo.responseBodyInfo} ]]*/ 'default';
+                        var responseBodyFieldInfoList = makeFieldInfoListFromModel(responseBodyInfo);
+                        var documentOutput = makeParameterTable(responseBodyFieldInfoList, false, 'responseBodyTable');
                         $('#documentResponseBody').append(documentOutput);
                     });
                 </script>
@@ -120,7 +122,7 @@
                 <div th:id="tryingRequestBody" th:if="${apiInfo.requestBodyInfo}">
                     <h6>Request Body</h6>
                     <div id="requestBodyInputForm"></div>
-                    <script src="/javascript/makeRequestBodyInput.js?ver=20190727-12"></script>
+                    <script src="/javascript/makeRequestBodyInput.js?ver=20190727-14"></script>
                     <script th:inline="javascript">
                         $(document).ready(function() {
                            var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
