@@ -72,7 +72,7 @@ function makeTextArea(isInline, inList, name) {
  *
  * @param {com.works.document.FieldInfo} field : 필드 정보를 갖는 객체.
  */
-function makeFieldInput(field) {
+function makeFieldInput(field, model) {
 
     var div = document.createElement('div');
 
@@ -106,18 +106,23 @@ function makeFieldInput(field) {
         } else {
             // Case 2: 단일 (Nested) Model 추가
             div.append(iconQuestion, iconDelete);
-            // 모델 추가 코드
+            if(model) {
+                var nestedModelDTO = model.nestedDTOList[field.nestedDTOIndex];
+                div.append(makeModelInput(nestedModelDTO), false);
+            }
         }
     } else {
         if(field.model == false) {
             // Case 3: 단순 필드 리스트
             div.append(iconQuestion, iconDelete);
-            // 리스트 추가 코드
             div.append(makeListInput());
         } else {
             // Case 4: (Nested) Model의 리스트
             div.append(iconQuestion, iconDelete);
-            // 모델 리스트 추가 코드
+            if(model) {
+                var nestedModelDTO = model.nestedDTOList[field.nestedDTOIndex];
+                div.append(makeListInput(nestedModelDTO));
+            }
         }
     }
 
@@ -129,7 +134,7 @@ function makeFieldInput(field) {
  *
  * @param {com.works.document.DTOInfo} model : 모델 정보를 갖는 객체.
  */
-function makeModelInput(model) {
+function makeModelInput(model, inList) {
 
     var fieldList = model.fieldInfoList;
 
@@ -144,13 +149,24 @@ function makeModelInput(model) {
 
     // 모델 내 모든 필드를 조회하며 입력이 가능한 태그를 추가.
     for(var i = 0; i < fieldList.length; i++) {
-        divInner.append(makeFieldInput(fieldList[i]));
+        divInner.append(makeFieldInput(fieldList[i], model));
     }
 
     // JSON의 끝을 나타내는 Close Bracket.
     var modelCloseBracket = document.createElement('div');
     modelCloseBracket.innerText = '}';
     divOuter.append(modelCloseBracket);
+
+    if(inList) {
+        var iconDelete = document.createElement('img');
+        iconDelete.src = '/img/X.png';
+        divOuter.append(iconDelete);
+
+        iconDelete.onclick = function() {
+            var deleteTarget = event.target.parentElement;
+            deleteTarget.remove();
+        }
+    }
 
     return divOuter;
 }
@@ -174,7 +190,7 @@ function makeListInput(model) {
 
     if(model) {
         // 파라미터 model을 전달할 경우에만 Model Input 생성
-        var modelInput = makeModelInput(model);
+        var modelInput = makeModelInput(model, true);
         divInner.append(modelInput);
     } else {
         // 파라미터 model을 전달하지 않으면 일반 textarea 생성
@@ -188,14 +204,17 @@ function makeListInput(model) {
     iconPlus.src = '/img/Plus.png';
     divInner.append(iconPlus);
 
-    iconPlus.onclick = function(event, model) {
-        if(model) {
-            alert(model.simpleModelName);
-        } else {
+    if(model) {
+        iconPlus.onclick = function(event) {
+            var modelInput = makeModelInput(model, true);
+            event.target.before(modelInput);
+        }
+    } else {
+        iconPlus.onclick = function(event) {
             var textArea = makeTextArea(false, true);
             event.target.before(textArea);
         }
-    };
+    }
 
     // JSON 리스트의 끝을 나타내는 Close Bracket.
     var listCloseBracket = document.createElement('div');
