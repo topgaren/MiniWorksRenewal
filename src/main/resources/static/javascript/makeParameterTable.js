@@ -11,6 +11,7 @@ function makeParameterTable(parameterInfoList, isRequired, tableId) {
     font.setAttribute('size', '2');
 
     var table = document.createElement('table');
+    table.style.marginTop = '0px';
     table.className = 'field-table';
     table.id = tableId;
     font.append(table);
@@ -118,3 +119,48 @@ function makeFieldInfoListFromModel(modelDTOInfo, nestedModelPrefix) {
 
     return resultFieldInfoList;
 }
+
+
+
+
+
+function makeDTOInfoList(startDTOInfo, allDTOInfoList) {
+
+    var resultDTOInfoList = [];
+    resultDTOInfoList.push(startDTOInfo);
+
+    for(var i = 0; i < startDTOInfo.fieldInfoList.length; i++) {
+        var fieldInfo = startDTOInfo.fieldInfoList[i];
+        if(fieldInfo.model) {
+            var nestedDTOInfo = getDTOInfoByName(fieldInfo.type, allDTOInfoList);
+            var nestedDTOInfoList = makeDTOInfoList(nestedDTOInfo, allDTOInfoList);
+            resultDTOInfoList = resultDTOInfoList.concat(nestedDTOInfoList);
+        }
+    }
+
+    return resultDTOInfoList;
+}
+
+
+function makeTableByDTOInfoList(dtoInfoList, isRequired) {
+
+    var div = document.createElement('div');
+
+    for(var i = 0; i < dtoInfoList.length; i++) {
+        var dtoInfo = dtoInfoList[i];
+        var dtoInfoDiv = document.createElement('div');
+        dtoInfoDiv.style.marginTop = '20px';
+        var tableName = document.createElement('div');
+        tableName.innerText = dtoInfo.simpleModelName;
+        tableName.style.fontSize = '14px';
+        tableName.style.fontWeight = 'bold';
+
+        var table = makeParameterTable(dtoInfo.fieldInfoList, isRequired, tableName);
+        dtoInfoDiv.append(tableName, table);
+
+        div.append(dtoInfoDiv);
+    }
+
+    return div;
+}
+

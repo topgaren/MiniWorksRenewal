@@ -15,7 +15,7 @@
     crossorigin="anonymous"></script>
 
     <!--custom css-->
-    <link rel="stylesheet" href="/css/Documents.css?ver=20190726-8" type="text/css">
+    <link rel="stylesheet" href="/css/Documents.css?ver=20190729-6" type="text/css">
 </head>
 <body>
     <!-- Header(Fixed) -->
@@ -28,20 +28,16 @@
     </div>
 
     <!-- Sidebar(Fixed) -->
-    <div id="sidebar">
-        <h4 th:text="${userAPIGroup.apiGroupName}"></h4>
-        <ul >
-            <li th:each="apiInfo : ${userAPIGroup.apiInfoList}">
-                <a style="color: white;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
-            </li>
-        </ul>
-        <br/>
-        <h4 th:text="${orgAPIGroup.apiGroupName}"></h4>
-        <ul>
-            <li th:each="apiInfo : ${orgAPIGroup.apiInfoList}">
-                <a style="color: white;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
-            </li>
-        </ul>
+    <div id="sidebar" >
+        <div th:each="sidebarApiGroupInfo : ${sidebarApiGroupInfoList}" style="margin-bottom: 30px;">
+            <h4 th:text="${sidebarApiGroupInfo.groupName}"></h4>
+            <ul>
+                <li th:each="sidebarApiInfo : ${sidebarApiGroupInfo.sidebarAPIInfoList}">
+                    <a style="color: white;" th:href="@{/documents/} + ${sidebarApiInfo.apiCode}"
+                       th:text="${sidebarApiInfo.apiNameKorVer}"></a>
+                </li>
+            </ul>
+        </div><br/>
     </div>
 
     <!-- Main Docuement & API Trying Tool -->
@@ -55,13 +51,19 @@
         <!-- API Document + API Trying Tool -->
         <div id="apiDocumentAndTryingTool">
             <h2 th:text="${apiInfo.apiNameKorVer}"></h2>
-            <h6 th:text="${apiInfo.apiDescription}"></h6><br/>
+            <h6 th:text="${apiInfo.apiDescription}"></h6>
 
-            <script src="/javascript/makeParameterTable.js?ver=20190727-24"></script>
+            <div id="returnValue">
+                <span>Return value:</span>
+                <span th:text="${apiInfo.returnValue}"></span>
+            </div>
+
+            <script src="/javascript/getDTOInfoByName.js?ver=20190729-1"></script>
+            <script src="/javascript/makeParameterTable.js?ver=20190729-12"></script>
 
             <!-- Path Parameter Document -->
             <div id="documentPathParameter">
-                <h5>Path Parameter</h5>
+                <h5 style="margin-bottom: 10px;">Path Parameter</h5>
                 <script th:inline="javascript">
                     $(document).ready(function() {
                         var ppfieldInfoList = /*[[ ${apiInfo.pathParameterInfoList} ]]*/ 'default';
@@ -78,8 +80,11 @@
                 <script th:inline="javascript">
                     $(document).ready(function() {
                         var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
-                        var requestBodyFieldInfoList = makeFieldInfoListFromModel(requestBodyInfo);
-                        var documentOutput = makeParameterTable(requestBodyFieldInfoList, true, 'requestBodyTable');
+                        var allDTOInfoList = /*[[ ${allDTOInfoList} ]]*/ 'default';
+                        var requestBodyDTOInfo = getDTOInfoByName(requestBodyInfo.type, allDTOInfoList);
+                        var requestBodyDTOInfoList = makeDTOInfoList(requestBodyDTOInfo, allDTOInfoList);
+
+                        var documentOutput = makeTableByDTOInfoList(requestBodyDTOInfoList, true);
                         $('#documentRequestBody').append(documentOutput);
                     });
                 </script>
@@ -92,8 +97,11 @@
                 <script th:inline="javascript">
                     $(document).ready(function() {
                         var responseBodyInfo = /*[[ ${apiInfo.responseBodyInfo} ]]*/ 'default';
-                        var responseBodyFieldInfoList = makeFieldInfoListFromModel(responseBodyInfo);
-                        var documentOutput = makeParameterTable(responseBodyFieldInfoList, false, 'responseBodyTable');
+                        var allDTOInfoList = /*[[ ${allDTOInfoList} ]]*/ 'default';
+                        var responseBodyDTOInfo = getDTOInfoByName(responseBodyInfo.type, allDTOInfoList);
+                        var responseBodyDTOInfoList = makeDTOInfoList(responseBodyDTOInfo, allDTOInfoList);
+
+                        var documentOutput = makeTableByDTOInfoList(responseBodyDTOInfoList, false);
                         $('#documentResponseBody').append(documentOutput);
                     });
                 </script>
@@ -122,11 +130,14 @@
                 <div th:id="tryingRequestBody" th:if="${apiInfo.requestBodyInfo}">
                     <h6>Request Body</h6>
                     <div id="requestBodyInputForm"></div>
-                    <script src="/javascript/makeRequestBodyInput.js?ver=20190728-4"></script>
+                    <script src="/javascript/makeRequestBodyInput.js?ver=20190729-4"></script>
                     <script th:inline="javascript">
                         $(document).ready(function() {
                            var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
-                           var modelInput = makeModelInput(requestBodyInfo);
+                           var allDTOInfoList = /*[[ ${allDTOInfoList} ]]*/ 'default';
+                           var requestBodyDTO = getDTOInfoByName(requestBodyInfo.type, allDTOInfoList);
+
+                           var modelInput = makeModelInput(requestBodyDTO, allDTOInfoList);
                            document.getElementById('requestBodyInputForm').append(modelInput);
                         });
                     </script>

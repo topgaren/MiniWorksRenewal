@@ -1,9 +1,14 @@
 package com.works.document;
 
+import com.works.annotation.DTO;
+import com.works.annotation.DescriptionField;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 
 @AllArgsConstructor
 @Getter
@@ -18,13 +23,13 @@ public class FieldInfo {
 
     private boolean list;       // 필드가 리스트 형태인지
     private boolean model;      // 타입이 DTO 객체인지
-    private int nestedDTOIndex; // Field가 Nested Model일 경우 해당 정보를 갖고 있는 리스트의 인덱스
 
 
     /**
      *  FieldInfo 클래스의 생성자.
      */
     public FieldInfo() {
+
         parameter = "";
         type = "";
         simpleType = "";
@@ -32,6 +37,33 @@ public class FieldInfo {
         description = "";
         list = false;
         model = false;
-        nestedDTOIndex = -1;
+    }
+
+    public FieldInfo(Field field) throws Exception {
+
+        this();
+        parameter = field.getName();
+        type = field.getType().getName();
+        simpleType = field.getType().getSimpleName();
+        description = field.getAnnotation(DescriptionField.class).description();
+
+        // 필드가 리스트(List)인 경우
+        if(simpleType.equals("List")) {
+            list = true;
+            simpleType = "List<" + simpleType + ">";
+
+            // 리스트 내의 타입을 추가적으로 확인.
+            ParameterizedType pt = (ParameterizedType)field.getGenericType();
+            Class<?> classInList = (Class<?>)pt.getActualTypeArguments()[0];
+            type = classInList.getName();
+        }
+
+        // 필드 타입이 또 다른 DTO인지 확인.
+        if(!field.getType().isPrimitive()) {
+            Class<?> nestedObject = Class.forName(type);
+            if(nestedObject.isAnnotationPresent(DTO.class)) {
+                model = true;
+            }
+        }
     }
 }

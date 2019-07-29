@@ -1,44 +1,34 @@
 package com.works.controller;
 
 
-import com.works.annotation.DescriptionAPI;
 import com.works.document.APIInfo;
 import com.works.document.DTOInfo;
+import com.works.document.DocumentInfo;
 import com.works.document.SidebarAPIGroup;
-import com.works.dto.UserRequestCreateDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.ArrayList;
 
 @Controller
 public class ApiTryingController {
 
-    private List<SidebarAPIGroup> sidebarAPIGroupList;
+    private DocumentInfo documentInfo;
 
     public ApiTryingController() throws Exception {
-        sidebarAPIGroupList = new ArrayList<>();
+
+        documentInfo = new DocumentInfo();
     }
 
     @RequestMapping("/documents/main")
     public String documentsMain(Model model) throws Exception {
 
-        // 최초 한번만 실행되는 코드
-        if(sidebarAPIGroupList.isEmpty()) {
-            sidebarAPIGroupList.add(new SidebarAPIGroup("UserController"));
-            sidebarAPIGroupList.add(new SidebarAPIGroup("OrgUnitController"));
-        }
-
-        // 구성원 API Group
-        model.addAttribute("userAPIGroup", sidebarAPIGroupList.get(0));
-
-        // 조직 API Group
-        model.addAttribute("orgAPIGroup", sidebarAPIGroupList.get(1));
+        // 사이드 바를 구성하기 위한 정보 전달.
+        model.addAttribute("sidebarApiGroupInfoList", documentInfo.getSidebarAPIGroupInfoList());
 
         String thymeleaf = "Hello Thymeleaf!";
         model.addAttribute("test", thymeleaf);
@@ -46,41 +36,17 @@ public class ApiTryingController {
         return "DocumentsMain";
     }
 
-
-
-
     @RequestMapping("/documents/{apiCode}")
     public String documentsApi(@PathVariable int apiCode, Model model) throws Exception {
 
-        // 최초 한번만 실행되는 코드
-        if(sidebarAPIGroupList.isEmpty()) {
-            sidebarAPIGroupList.add(new SidebarAPIGroup("UserController"));
-            sidebarAPIGroupList.add(new SidebarAPIGroup("OrgUnitController"));
-        }
+        // 사이드 바를 구성하기 위한 정보 전달.
+        model.addAttribute("sidebarApiGroupInfoList", documentInfo.getSidebarAPIGroupInfoList());
 
-        // 구성원 API Group
-        model.addAttribute("userAPIGroup", sidebarAPIGroupList.get(0));
+        // Documentation 대상 APIInfo 전달.
+        model.addAttribute("apiInfo", documentInfo.getApiInfoByApiCode(apiCode));
 
-        // 조직 API Group
-        model.addAttribute("orgAPIGroup", sidebarAPIGroupList.get(1));
-
-        // apiCode로 문서화할 APIInfo 객체 얻어오기
-        APIInfo targetAPIInfo = null;
-        for(SidebarAPIGroup sidebarAPIGroup : sidebarAPIGroupList) {
-            for(APIInfo apiInfo : sidebarAPIGroup.getApiInfoList()) {
-                if(apiCode == apiInfo.getApiCode()) {
-                    targetAPIInfo = apiInfo;
-                    break;
-                }
-            }
-        }
-
-        // 존재하지 않는 apiCode를 사용하여 targetApiInfo를 얻어오지 못했다면 최초 화면으로 이동.
-        if(targetAPIInfo == null) {
-            return "DocumentsMain";
-        }
-
-        model.addAttribute("apiInfo", targetAPIInfo);
+        // Table 및 Trying Tool에 사용되는 모든 DTOInfo 전달.
+        model.addAttribute("allDTOInfoList", documentInfo.getAllDTOInfoList());
 
         return "DocumentsAPI";
     }

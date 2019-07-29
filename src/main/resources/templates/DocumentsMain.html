@@ -28,20 +28,15 @@
     </div>
 
     <!-- Sidebar(Fixed) -->
-    <div id="sidebar">
-        <h4 th:text="${userAPIGroup.apiGroupName}"></h4>
-        <ul >
-            <li th:each="apiInfo : ${userAPIGroup.apiInfoList}">
-                <a style="color: white;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
-            </li>
-        </ul>
-        <br/>
-        <h4 th:text="${orgAPIGroup.apiGroupName}"></h4>
-        <ul>
-            <li th:each="apiInfo : ${orgAPIGroup.apiInfoList}">
-                <a style="color: white;" th:href="@{/documents/} + ${apiInfo.apiCode}" th:text="${apiInfo.apiNameKorVer}"></a>
-            </li>
-        </ul>
+    <div id="sidebar" >
+        <div th:each="sidebarApiGroupInfo : ${sidebarApiGroupInfoList}" style="margin-bottom: 30px;">
+            <h4 th:text="${sidebarApiGroupInfo.groupName}"></h4>
+            <ul>
+                <li th:each="sidebarApiInfo : ${sidebarApiGroupInfo.sidebarAPIInfoList}">
+                    <a style="color: white;" th:href="@{/documents/} + ${sidebarApiInfo.apiCode}" th:text="${sidebarApiInfo.apiNameKorVer}"></a>
+                </li>
+            </ul>
+        </div><br/>
     </div>
 
     <!-- Main Docuement & API Trying Tool -->

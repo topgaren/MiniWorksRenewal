@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +24,15 @@ public class APIInfo {
     private String apiNameKorVer;   // API 한글 이름.
     private String apiDescription;  // API 개요.
     private String requestURI;      // API 요청 URI.
-    private String httpMethod;      // HTTP Method
+    private String httpMethod;      // HTTP Method.
+    private String returnValue;     // 리턴 타입.
     private String apiResponse;     // API 응답에 관한 설명.
     private int apiCode;            // API 고유 번호.
 
     private List<FieldInfo> pathParameterInfoList;  // Path parameter에 전달되는 field 정보.
 
-    private DTOInfo requestBodyInfo;    // Request Body에 전달되어야 하는 JSON 객체의 정보.
-    private DTOInfo responseBodyInfo;   // Response Body에 전달되는 JSON 객체의 정보.
+    private FieldInfo requestBodyInfo;    // Request Body에 전달되는 객체의 이름.
+    private FieldInfo responseBodyInfo;   // Response Body로 전달되는 객체의 이름.
 
     public APIInfo(Method api) throws Exception {
 
@@ -41,16 +41,17 @@ public class APIInfo {
         apiDescription = api.getAnnotation(DescriptionAPI.class).description();
         requestURI = api.getAnnotation(RequestMapping.class).value()[0];
         httpMethod = api.getAnnotation(RequestMapping.class).method()[0].toString();
+        returnValue = "void";
         apiResponse = api.getAnnotation(DescriptionAPI.class).response();
         apiCode = api.getAnnotation(DescriptionAPI.class).apiCode();
+
+        pathParameterInfoList = new ArrayList<>();
 
         requestBodyInfo = null;
         responseBodyInfo = null;
 
         // API 메소드 파라미터 정보 파싱
-        pathParameterInfoList = new ArrayList<>();
         for(Parameter apiParameter : api.getParameters()) {
-
             // @PathVariable 어노테이션을 사용하는 파라미터 --> URI를 통해 전달된 파라미터
             if(apiParameter.isAnnotationPresent(PathVariable.class)) {
                 FieldInfo parameterInfo = new FieldInfo();
@@ -63,14 +64,29 @@ public class APIInfo {
 
             // @RequestBody 어노테이션을 사용하는 파라미터 --> JSON 형태로 전달한 DTO
             if(apiParameter.isAnnotationPresent(RequestBody.class)) {
-                requestBodyInfo = new DTOInfo(apiParameter.getType());
+                requestBodyInfo = new FieldInfo();
+                requestBodyInfo.setType(apiParameter.getType().getName());
             }
         }
 
         // Returned DTO에 대한 정보 파싱
-        Class<?> returnObjectType = api.getReturnType();
-        if(returnObjectType.isAnnotationPresent(DTO.class)) {
-            responseBodyInfo = new DTOInfo(returnObjectType);
+        Type returnType = api.getGenericReturnType();
+        String returnTypeName = returnType.getTypeName();
+        if(!returnTypeName.equals("void")) {
+            responseBodyInfo = new FieldInfo();
+            if(returnTypeName.contains("List")) {
+                responseBodyInfo.setList(true);
+                ParameterizedType pt = (ParameterizedType)returnType;
+                Type typeInList = pt.getActualTypeArguments()[0];
+                String typeName = typeInList.getTypeName();
+                responseBodyInfo.setType(typeName);
+                String simpleTypeName = typeName.substring(typeName.lastIndexOf('.') + 1);
+                returnValue = "List<" + simpleTypeName + ">";
+            } else {
+                responseBodyInfo.setType(returnTypeName);
+                String simpleTypeName = returnTypeName.substring(returnTypeName.lastIndexOf('.') + 1);
+                returnValue = simpleTypeName;
+            }
         }
     }
 }

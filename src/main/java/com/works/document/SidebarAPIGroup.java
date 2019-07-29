@@ -12,8 +12,9 @@ import java.util.List;
 public class SidebarAPIGroup implements Comparable<SidebarAPIGroup> {
 
     private String apiGroupName;
-    private List<APIInfo> apiInfoList;
     private int apiGroupCode;
+    private List<APIInfo> apiInfoList;
+
 
     public SidebarAPIGroup(String controllerName) throws Exception {
         Class<?> controllerClass = Class.forName("com.works.controller." + controllerName);

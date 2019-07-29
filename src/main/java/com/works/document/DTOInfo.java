@@ -35,7 +35,6 @@ public class DTOInfo {
         simpleModelName = dtoClass.getSimpleName();
 
         fieldInfoList = new ArrayList<>();
-        nestedDTOList = new ArrayList<>();
 
         int nestedDTOIndex = 0;
 
@@ -43,33 +42,7 @@ public class DTOInfo {
             field.setAccessible(true);
 
             // VariableInfo 기본 필드 값 설정.
-            FieldInfo fieldInfo = new FieldInfo();
-            fieldInfo.setParameter(field.getName());
-            fieldInfo.setType(field.getType().getName());
-            fieldInfo.setSimpleType(field.getType().getSimpleName());
-            fieldInfo.setDescription(field.getAnnotation(DescriptionField.class).description());
-
-            // 필드가 리스트(List)인 경우
-            if(fieldInfo.getSimpleType().equals("List")) {
-                fieldInfo.setList(true);
-
-                // 리스트 내의 타입을 추가적으로 확인.
-                ParameterizedType pt = (ParameterizedType)field.getGenericType();
-                Class<?> classInList = (Class<?>)pt.getActualTypeArguments()[0];
-                fieldInfo.setType(classInList.getName());
-            }
-
-            // 필드 타입이 또 다른 DTO인지 확인.
-            if(!field.getType().isPrimitive()) {
-                Class<?> nestedObject = Class.forName(fieldInfo.getType());
-                if(nestedObject.isAnnotationPresent(DTO.class)) {
-                    fieldInfo.setModel(true);
-                    fieldInfo.setNestedDTOIndex(nestedDTOIndex);
-                    nestedDTOList.add(new DTOInfo(nestedObject));
-                    nestedDTOIndex++;
-                }
-            }
-
+            FieldInfo fieldInfo = new FieldInfo(field);
             fieldInfoList.add(fieldInfo);
         }
     }

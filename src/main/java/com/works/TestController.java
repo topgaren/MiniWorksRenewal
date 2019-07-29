@@ -13,7 +13,7 @@ public class TestController {
     UserMapper userMapper;
 
     @GetMapping("/")
-    public String hello() {
+    public String hello() throws Exception {
         Integer userCount = userMapper.getUserCount(100);
 
         return userCount.toString();

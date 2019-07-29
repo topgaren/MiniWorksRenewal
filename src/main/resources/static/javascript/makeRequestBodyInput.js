@@ -72,7 +72,7 @@ function makeTextArea(isInline, inList, name) {
  *
  * @param {com.works.document.FieldInfo} field : 필드 정보를 갖는 객체.
  */
-function makeFieldInput(field, model) {
+function makeFieldInput(field, allDTOInfoList) {
 
     var div = document.createElement('div');
 
@@ -106,10 +106,9 @@ function makeFieldInput(field, model) {
         } else {
             // Case 2: 단일 (Nested) Model 추가
             div.append(iconQuestion, iconDelete);
-            if(model) {
-                var nestedModelDTO = model.nestedDTOList[field.nestedDTOIndex];
-                div.append(makeModelInput(nestedModelDTO), false);
-            }
+
+            var nestedModelDTO = getDTOInfoByName(field.type, allDTOInfoList);
+            div.append(makeModelInput(nestedModelDTO, allDTOInfoList, false));
         }
     } else {
         if(field.model == false) {
@@ -119,10 +118,9 @@ function makeFieldInput(field, model) {
         } else {
             // Case 4: (Nested) Model의 리스트
             div.append(iconQuestion, iconDelete);
-            if(model) {
-                var nestedModelDTO = model.nestedDTOList[field.nestedDTOIndex];
-                div.append(makeListInput(nestedModelDTO));
-            }
+            var nestedModelDTO = getDTOInfoByName(field.type, allDTOInfoList);
+            div.append(makeListInput(nestedModelDTO, allDTOInfoList));
+
         }
     }
 
@@ -134,7 +132,7 @@ function makeFieldInput(field, model) {
  *
  * @param {com.works.document.DTOInfo} model : 모델 정보를 갖는 객체.
  */
-function makeModelInput(model, inList) {
+function makeModelInput(model, allDTOInfoList, inList) {
 
     var fieldList = model.fieldInfoList;
 
@@ -149,7 +147,7 @@ function makeModelInput(model, inList) {
 
     // 모델 내 모든 필드를 조회하며 입력이 가능한 태그를 추가.
     for(var i = 0; i < fieldList.length; i++) {
-        divInner.append(makeFieldInput(fieldList[i], model));
+        divInner.append(makeFieldInput(fieldList[i], allDTOInfoList));
     }
 
     // JSON의 끝을 나타내는 Close Bracket.
@@ -177,7 +175,7 @@ function makeModelInput(model, inList) {
  *
  * @param {com.works.document.DTOInfo} model : Model의 List를 생성할 경우 해당 model을 전달.
  */
-function makeListInput(model) {
+function makeListInput(model, allDTOInfoList) {
 
     // JSON 리스트의 시작을 나타내는 Open Bracket.
     var divOuter = document.createElement('div');
@@ -190,7 +188,7 @@ function makeListInput(model) {
 
     if(model) {
         // 파라미터 model을 전달할 경우에만 Model Input 생성
-        var modelInput = makeModelInput(model, true);
+        var modelInput = makeModelInput(model, allDTOInfoList, true);
         divInner.append(modelInput);
     } else {
         // 파라미터 model을 전달하지 않으면 일반 textarea 생성
@@ -206,7 +204,7 @@ function makeListInput(model) {
 
     if(model) {
         iconPlus.onclick = function(event) {
-            var modelInput = makeModelInput(model, true);
+            var modelInput = makeModelInput(model, allDTOInfoList, true);
             event.target.before(modelInput);
         }
     } else {
