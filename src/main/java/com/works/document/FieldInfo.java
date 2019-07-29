@@ -50,12 +50,12 @@ public class FieldInfo {
         // 필드가 리스트(List)인 경우
         if(simpleType.equals("List")) {
             list = true;
-            simpleType = "List<" + simpleType + ">";
 
             // 리스트 내의 타입을 추가적으로 확인.
             ParameterizedType pt = (ParameterizedType)field.getGenericType();
             Class<?> classInList = (Class<?>)pt.getActualTypeArguments()[0];
             type = classInList.getName();
+            simpleType = "List<" + classInList.getSimpleName() + ">";
         }
 
         // 필드 타입이 또 다른 DTO인지 확인.

@@ -130,7 +130,7 @@
                 <div th:id="tryingRequestBody" th:if="${apiInfo.requestBodyInfo}">
                     <h6>Request Body</h6>
                     <div id="requestBodyInputForm"></div>
-                    <script src="/javascript/makeRequestBodyInput.js?ver=20190729-23"></script>
+                    <script src="/javascript/makeRequestBodyInput.js?ver=20190729-24"></script>
                     <script th:inline="javascript">
                         $(document).ready(function() {
                            var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
@@ -163,6 +163,7 @@
 
 
     <!-- Send Request & Recieve Response -->
+    <script src="/javascript/makeRequestBodyJSON.js?ver=20190730-10"></script>
     <script src="/javascript/makeAjaxObject.js?ver=20190726-3"></script>
     <script th:inline="JavaScript">
         $(document).ready(function() {
@@ -180,13 +181,13 @@
                 });
 
                 // Request Body 파싱
-                var parameterJSON = {};
-                $('.requestParameter').each(function(index, element) {
-                    parameterJSON[element.getAttribute("name")] = element.value;
-                });
+                if( document.getElementById('requestBodyInputForm') != null ) {
+                    var requestModelDOM = document.getElementById('requestBodyInputForm').firstChild;
+                    var requestJSON = makeRequestBodyJSON(requestModelDOM);
+                }
 
                 // URL, HTTP Method, Request Body 데이터로 Ajax에 전달할 객체를 생성한다.
-                var ajaxObject = makeAjaxObject(apiRequestURL, httpMethod, parameterJSON);
+                var ajaxObject = makeAjaxObject(apiRequestURL, httpMethod, requestJSON);
 
                 // Ajax를 통해 요청을 전송한다.
                 $.ajax(ajaxObject);

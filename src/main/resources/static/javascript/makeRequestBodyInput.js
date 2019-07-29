@@ -88,16 +88,18 @@ function makeFieldInput(field, allDTOInfoList) {
     if(field.list == false) {
         if(field.model == false) {
             // Case 1: 리스트도 아니고 Model도 아닌 일반 필드
+            div.className = 'field-input';
             var textArea = makeTextArea(true, false, field.parameter);
             div.append(textArea, iconQuestion, iconDelete);
         } else {
             // Case 2: 단일 (Nested) Model 추가
+            div.className = 'model-input';
             div.append(iconQuestion, iconDelete);
-
             var nestedModelDTO = getDTOInfoByName(field.type, allDTOInfoList);
             div.append(makeModelInput(nestedModelDTO, allDTOInfoList, false));
         }
     } else {
+        div.className = 'list-input';
         if(field.model == false) {
             // Case 3: 단순 필드 리스트
             div.append(iconQuestion, iconDelete);
@@ -127,6 +129,7 @@ function makeModelInput(model, allDTOInfoList, inList) {
 
     // JSON의 시작을 나타내는 Open Bracket.
     var divOuter = document.createElement('div');
+    divOuter.className = 'model-input';
     divOuter.innerText = '{ ';
 
     // 객체 내 필드의 들여쓰기(20px)를 위한 div 태그.

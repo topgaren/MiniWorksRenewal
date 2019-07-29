@@ -39,9 +39,6 @@ public class UserRequestCreateDTO {
     @DescriptionField(description = "입사일 (형태: YYYY-MM-dd)")
     private Date hireDate;
 
-    @DescriptionField(description = "테스트용 조직 정보")
-    private OrgUnitRequestCreateDTO organizations;
-
     public UserEntity toUserEntity() {
         // UserEntity에만 존재하는 필드는 0 또는 null로 초기화.
         return new UserEntity(0, 0, account, userName, null, authentication,
