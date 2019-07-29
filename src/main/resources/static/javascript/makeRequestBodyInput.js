@@ -40,10 +40,7 @@ function makeTextArea(isInline, inList, name) {
         iconDelete.className = 'icon icon-delete';
         iconDelete.src = '/img/X.png';
         divOuter.append(div, iconDelete);
-        iconDelete.onclick = function() {
-            var deleteTarget = event.target.parentElement;
-            deleteTarget.remove();
-        }
+        iconDelete.setAttribute("onclick", "iconDeleteClickEventHandler()");
 
         return divOuter;
     }
@@ -65,6 +62,7 @@ function makeTextArea(isInline, inList, name) {
 function makeFieldInput(field, allDTOInfoList) {
 
     var div = document.createElement('div');
+    div.setAttribute("name", field.parameter);
 
     // "[parameter]" :
     var spanParameter = document.createElement('span');
@@ -85,12 +83,7 @@ function makeFieldInput(field, allDTOInfoList) {
     iconDelete.className = 'icon icon-delete';
     iconDelete.style.paddingLeft = '4px';
     iconDelete.src = '/img/X.png';
-    iconDelete.onclick = function() {
-        var deleteTarget = event.target.parentElement;
-        deleteTarget.remove();
-    }
-
-    iconDelete.setAttribute("onclick", "deleteIconClickEvent()");
+    iconDelete.setAttribute("onclick", "iconDeleteClickEventHandler()");
 
     if(field.list == false) {
         if(field.model == false) {
@@ -141,9 +134,12 @@ function makeModelInput(model, allDTOInfoList, inList) {
     divInner.style.paddingLeft = '20px';
     divOuter.append(divInner);
 
-    // 모델 내 모든 필드를 조회하며 입력이 가능한 태그를 추가.
+    // 모델 내 모든 필드를 조회하며 required가 true인 필드를 대상으로만 입력이 가능한 태그를 생성.
     for(var i = 0; i < fieldList.length; i++) {
-        divInner.append(makeFieldInput(fieldList[i], allDTOInfoList));
+        var fieldInfo = fieldList[i];
+        if(fieldInfo.required == true) {
+            divInner.append(makeFieldInput(fieldList[i], allDTOInfoList));
+        }
     }
 
     // JSON의 끝을 나타내는 Close Bracket.
@@ -154,17 +150,41 @@ function makeModelInput(model, allDTOInfoList, inList) {
     if(inList) {
         var iconDelete = document.createElement('img');
         iconDelete.src = '/img/X.png';
+        iconDelete.setAttribute("onclick", "iconDeleteClickEventHandler()");
         divOuter.append(iconDelete);
-
-        iconDelete.onclick = function() {
-            var deleteTarget = event.target.parentElement;
-            deleteTarget.remove();
-        }
     }
+
+    var select = makeSelectDropbox(model, allDTOInfoList);
+    divInner.append(select);
 
     return divOuter;
 }
 
+/**
+ * 삭제 버튼 클릭 이벤트 핸들러
+ */
+function iconDeleteClickEventHandler() {
+    // 삭제 대상 DOM과 삭제 대상 필드명을 가져온다.
+    var deleteTarget = event.target.parentElement;
+    var deletedFieldName = deleteTarget.getAttribute('name');
+
+    // 삭제 필드명으로 새로운 옵션 DOM을 생성한다.
+    var option = document.createElement('option');
+    option.value = deletedFieldName;
+    option.innerText = deletedFieldName;
+
+    // select DOM에 옵션 DOM을 추가시킨다.
+    var select = deleteTarget.parentElement.lastElementChild;
+    select.append(option);
+
+    // DOM 삭제 수행.
+    deleteTarget.remove();
+
+    // Select Dropbox가 지워진 상태라면 다시 생성한다.
+    if(select.style.display == 'none') {
+        select.style.display = 'block';
+    }
+}
 
 /**
  * List를 JSON 형태로 입력받을 수 있는 DOM 객체를 생성한다.
@@ -217,4 +237,63 @@ function makeListInput(model, allDTOInfoList) {
     divOuter.append(listCloseBracket);
 
     return divOuter;
+}
+
+
+function makeSelectDropbox(model, allDTOInfoList) {
+
+    var select = document.createElement('select');
+    select.className = 'select ' + model.simpleModelName;
+
+    // Select Dropbox의 제목을 담당할 Option
+    var addProperty = document.createElement('option');
+    addProperty.innerText = '-- add property --';
+    addProperty.selected = 'selected';
+    addProperty.disabled = 'disabled';
+    select.append(addProperty);
+
+    // 모델 내의 필드를 조회하며 required가 false인 필드만 Option에 추가시킨다.
+    for(var i = 0; i < model.fieldInfoList.length; i++) {
+        var fieldInfo = model.fieldInfoList[i];
+        if(fieldInfo.required == false) {
+            var option = document.createElement('option');
+            option.value = fieldInfo.parameter;
+            option.innerText = fieldInfo.parameter;
+            select.append(option);
+        }
+    }
+
+    // Select Dropbox 내부의 Option을 클릭할 때의 이벤트 핸들러.
+    select.onchange = function() {
+        // 선택한 Option의 인덱스를 가져온다. 인덱스 0은 제목 옵션을 의미.
+        var optionIndex = this.selectedIndex;
+
+        // 제목 옵션을 선택한 경우가 아니라면
+        if(optionIndex > 0) {
+            // 해당 옵션의 파라미터 이름을 저장한 뒤 옵션 삭제.
+            var targetOption = this.options[optionIndex];
+            var fieldName = targetOption.value;
+            targetOption.remove();
+
+            // 제목 옵션으로 포커싱.
+            this.options[0].selected = 'selected';
+
+            // 제목 옵션 외에 남아있지 않다면 Select Dropbox를 지운다.
+            if(select.childElementCount == 1) {
+                select.style.display = 'none';
+            }
+
+            for(var i = 0; i < model.fieldInfoList.length; i++) {
+                fieldInfo = model.fieldInfoList[i];
+                if(fieldName == fieldInfo.parameter) {
+                    var fieldInput = makeFieldInput(fieldInfo, allDTOInfoList);
+                    this.before(fieldInput);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    return select;
 }

@@ -40,7 +40,7 @@ public class UserRequestCreateDTO {
     private Date hireDate;
 
     @DescriptionField(description = "테스트용 조직 정보")
-    private List<OrgUnitRequestCreateDTO> organizations;
+    private OrgUnitRequestCreateDTO organizations;
 
     public UserEntity toUserEntity() {
         // UserEntity에만 존재하는 필드는 0 또는 null로 초기화.

@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class APIInfo {
+public class APIInfo implements Comparable<APIInfo> {
 
     private String apiNameKorVer;   // API 한글 이름.
     private String apiDescription;  // API 개요.
@@ -88,5 +88,11 @@ public class APIInfo {
                 returnValue = simpleTypeName;
             }
         }
+    }
+
+    @Override
+    public int compareTo(APIInfo apiInfo) {
+
+        return this.apiCode - apiInfo.getApiCode();
     }
 }

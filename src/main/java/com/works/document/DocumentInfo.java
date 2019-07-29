@@ -44,6 +44,7 @@ public class DocumentInfo {
                 }
             }
         }
+        Collections.sort(allAPIInfoList);
         Collections.sort(sidebarAPIGroupInfoList);
     }
 
