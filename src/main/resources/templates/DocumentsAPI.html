@@ -58,8 +58,8 @@
                 <span th:text="${apiInfo.returnValue}"></span>
             </div>
 
-            <script src="/javascript/getDTOInfoByName.js?ver=20190729-1"></script>
-            <script src="/javascript/makeParameterTable.js?ver=20190729-12"></script>
+            <script src="/javascript/getDTOInfoByName.js?ver=20190729-2"></script>
+            <script src="/javascript/makeParameterTable.js?ver=20190729-13"></script>
 
             <!-- Path Parameter Document -->
             <div id="documentPathParameter">
@@ -130,7 +130,7 @@
                 <div th:id="tryingRequestBody" th:if="${apiInfo.requestBodyInfo}">
                     <h6>Request Body</h6>
                     <div id="requestBodyInputForm"></div>
-                    <script src="/javascript/makeRequestBodyInput.js?ver=20190729-4"></script>
+                    <script src="/javascript/makeRequestBodyInput.js?ver=20190729-6"></script>
                     <script th:inline="javascript">
                         $(document).ready(function() {
                            var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';

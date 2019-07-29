@@ -15,7 +15,7 @@ import java.lang.reflect.ParameterizedType;
 @Setter
 public class FieldInfo {
 
-    private String parameter;        // Document 테이블에 표기될 이름
+    private String parameter;   // Document 테이블에 표기될 이름
     private String type;        // Package 경로를 포함한 Java 타입
     private String simpleType;  // Package 경로가 생략된 Java 타입
     private boolean required;   // 요청 시 해당 필드의 필수 여부

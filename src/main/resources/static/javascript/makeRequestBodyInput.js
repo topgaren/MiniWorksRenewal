@@ -1,14 +1,3 @@
-/**
-    <div>
-        <span>"account"</span>  <span> : </span>
-        <div style="display: inline">
-            <span>"</span>  <textarea class="requestParameter" name="account"></textarea>  <span>"</span>
-        </div>
-        <img class="icon question-icon" id="questionIcon" src="/img/Q.png" />
-        <img class="icon delete-icon" id="deleteIcon" src="/img/X/png" onclick="deleteIconClickEvent()" />
-    </div>
-**/
-
 
 /**
  * textarea를 생성하여 반환한다.
@@ -71,6 +60,7 @@ function makeTextArea(isInline, inList, name) {
  *   Case 4 : (Nested) Model의 List.
  *
  * @param {com.works.document.FieldInfo} field : 필드 정보를 갖는 객체.
+ * @param {java.util.List<com.works.document.DTOInfo>} allDTOInfoList : 모든 DTOInfo 정보를 갖고 있는 리스트.
  */
 function makeFieldInput(field, allDTOInfoList) {
 
@@ -95,6 +85,10 @@ function makeFieldInput(field, allDTOInfoList) {
     iconDelete.className = 'icon icon-delete';
     iconDelete.style.paddingLeft = '4px';
     iconDelete.src = '/img/X.png';
+    iconDelete.onclick = function() {
+        var deleteTarget = event.target.parentElement;
+        deleteTarget.remove();
+    }
 
     iconDelete.setAttribute("onclick", "deleteIconClickEvent()");
 
@@ -131,6 +125,8 @@ function makeFieldInput(field, allDTOInfoList) {
  * Model을 JSON 형태로 입력받을 수 있는 DOM 객체를 생성한다.
  *
  * @param {com.works.document.DTOInfo} model : 모델 정보를 갖는 객체.
+ * @param {java.util.List<com.works.document.DTOInfo>} allDTOInfoList : 모든 DTOInfo 정보를 갖고 있는 리스트.
+ * @param {Boolean} inList : 모델을 리스트에 추가하는지 여부.
  */
 function makeModelInput(model, allDTOInfoList, inList) {
 
@@ -174,6 +170,7 @@ function makeModelInput(model, allDTOInfoList, inList) {
  * List를 JSON 형태로 입력받을 수 있는 DOM 객체를 생성한다.
  *
  * @param {com.works.document.DTOInfo} model : Model의 List를 생성할 경우 해당 model을 전달.
+ * @param {java.util.List<com.works.document.DTOInfo>} allDTOInfoList : 모든 DTOInfo 정보를 갖고 있는 리스트.
  */
 function makeListInput(model, allDTOInfoList) {
 
@@ -220,16 +217,4 @@ function makeListInput(model, allDTOInfoList) {
     divOuter.append(listCloseBracket);
 
     return divOuter;
-}
-
-
-/**
- * Delete Icon을 클릭했을 때 발생하는 Event Handler.
- * 해당 필드를 삭제하고 select-option에 추가한다.
- */
-function deleteIconClickEvent() {
-    deleteTarget = event.target.parentElement;
-    deleteTarget.remove();
-
-    // select에 option으로 추가하는 코드
 }
