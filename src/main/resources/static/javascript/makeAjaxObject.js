@@ -3,7 +3,6 @@ function makeAjaxObject(requestURL, httpMethod, requestData) {
     var ajaxObject = {
         url: requestURL,
         type: httpMethod,
-        dataType: 'json'
     };
 
     if(httpMethod == 'GET') {
@@ -16,7 +15,10 @@ function makeAjaxObject(requestURL, httpMethod, requestData) {
         ajaxObject['data'] = JSON.stringify(requestData);
         ajaxObject['contentType'] = 'application/json';
         ajaxObject['success'] = function(data, textStatus, jqXHR) {
-            $('#responseBodyTextArea').val(jqXHR.status);
+            var responseObject = jqXHR;
+            delete(responseObject.readyState);
+            delete(responseObject.responseText);
+            $('#responseBodyTextArea').val(JSON.stringify(responseObject, null, 3));
         }
     }
 

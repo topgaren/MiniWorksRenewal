@@ -15,7 +15,7 @@
     crossorigin="anonymous"></script>
 
     <!--custom css-->
-    <link rel="stylesheet" href="/css/Documents.css?ver=20190729-6" type="text/css">
+    <link rel="stylesheet" href="/css/Documents.css?ver=20190730-5" type="text/css">
 </head>
 <body>
     <!-- Header(Fixed) -->
@@ -31,13 +31,23 @@
     <div id="sidebar" >
         <div th:each="sidebarApiGroupInfo : ${sidebarApiGroupInfoList}" style="margin-bottom: 30px;">
             <h4 th:text="${sidebarApiGroupInfo.groupName}"></h4>
-            <ul>
-                <li th:each="sidebarApiInfo : ${sidebarApiGroupInfo.sidebarAPIInfoList}">
-                    <a style="color: white;" th:href="@{/documents/} + ${sidebarApiInfo.apiCode}"
-                       th:text="${sidebarApiInfo.apiNameKorVer}"></a>
-                </li>
-            </ul>
+            <div class="sidebar-api" th:each="sidebarApiInfo : ${sidebarApiGroupInfo.sidebarAPIInfoList}"
+                 th:id="${sidebarApiInfo.apiCode}">
+                <a th:href="@{/documents/} + ${sidebarApiInfo.apiCode}">
+                    <div id="apiKorName" th:text="${sidebarApiInfo.apiNameKorVer}"></div>
+                    <div id="apiDesc">Standard API for test</div>
+                </a>
+            </div>
         </div><br/>
+        <script th:inline="javascript">
+            $(document).ready(function() {
+                var apiCode = /*[[ ${apiInfo.apiCode} ]]*/ 'default';
+                var sidebarAPI = document.getElementById(apiCode);
+                var a = sidebarAPI.childNodes[1];
+                a.style.background = 'red';
+                a.childNodes[1].style.fontWeight = 'bold';
+            });
+        </script>
     </div>
 
     <!-- Main Docuement & API Trying Tool -->
@@ -82,8 +92,8 @@
                         var requestBodyInfo = /*[[ ${apiInfo.requestBodyInfo} ]]*/ 'default';
                         var allDTOInfoList = /*[[ ${allDTOInfoList} ]]*/ 'default';
                         var requestBodyDTOInfo = getDTOInfoByName(requestBodyInfo.type, allDTOInfoList);
-                        var requestBodyDTOInfoList = makeDTOInfoList(requestBodyDTOInfo, allDTOInfoList);
 
+                        var requestBodyDTOInfoList = makeDTOInfoList(requestBodyDTOInfo, allDTOInfoList);
                         var documentOutput = makeTableByDTOInfoList(requestBodyDTOInfoList, true);
                         $('#documentRequestBody').append(documentOutput);
                     });
@@ -99,8 +109,8 @@
                         var responseBodyInfo = /*[[ ${apiInfo.responseBodyInfo} ]]*/ 'default';
                         var allDTOInfoList = /*[[ ${allDTOInfoList} ]]*/ 'default';
                         var responseBodyDTOInfo = getDTOInfoByName(responseBodyInfo.type, allDTOInfoList);
-                        var responseBodyDTOInfoList = makeDTOInfoList(responseBodyDTOInfo, allDTOInfoList);
 
+                        var responseBodyDTOInfoList = makeDTOInfoList(responseBodyDTOInfo, allDTOInfoList);
                         var documentOutput = makeTableByDTOInfoList(responseBodyDTOInfoList, false);
                         $('#documentResponseBody').append(documentOutput);
                     });
@@ -164,7 +174,7 @@
 
     <!-- Send Request & Recieve Response -->
     <script src="/javascript/makeRequestBodyJSON.js?ver=20190730-10"></script>
-    <script src="/javascript/makeAjaxObject.js?ver=20190726-3"></script>
+    <script src="/javascript/makeAjaxObject.js?ver=20190730-8"></script>
     <script th:inline="JavaScript">
         $(document).ready(function() {
             // Send Request 버튼을 클릭하여 요청을 보내는 이벤트.

@@ -70,22 +70,27 @@ public class APIInfo implements Comparable<APIInfo> {
         }
 
         // Returned DTO에 대한 정보 파싱
-        Type returnType = api.getGenericReturnType();
-        String returnTypeName = returnType.getTypeName();
-        if(!returnTypeName.equals("void")) {
-            responseBodyInfo = new FieldInfo();
-            if(returnTypeName.contains("List")) {
-                responseBodyInfo.setList(true);
-                ParameterizedType pt = (ParameterizedType)returnType;
-                Type typeInList = pt.getActualTypeArguments()[0];
-                String typeName = typeInList.getTypeName();
-                responseBodyInfo.setType(typeName);
-                String simpleTypeName = typeName.substring(typeName.lastIndexOf('.') + 1);
-                returnValue = "List<" + simpleTypeName + ">";
-            } else {
-                responseBodyInfo.setType(returnTypeName);
-                String simpleTypeName = returnTypeName.substring(returnTypeName.lastIndexOf('.') + 1);
+        Class<?> returnType = api.getReturnType();
+        if(!returnType.getName().equals("void")) {
+
+            Type returnGenericType = api.getGenericReturnType();
+            if(returnGenericType instanceof ParameterizedType) {
+
+                Class<?> pType = ((Class<?>)((ParameterizedType)returnGenericType).getActualTypeArguments()[0]);
+                if(pType.isAnnotationPresent(DTO.class)) {
+                    responseBodyInfo = new FieldInfo();
+                    responseBodyInfo.setType(pType.getName());
+                }
+
+                String simpleTypeName = returnType.getSimpleName();
+                simpleTypeName += ('<' + pType.getSimpleName() + '>');
                 returnValue = simpleTypeName;
+            } else {
+                if(returnType.isAnnotationPresent(DTO.class)) {
+                    responseBodyInfo = new FieldInfo();
+                    responseBodyInfo.setType(returnType.getName());
+                }
+                returnValue = returnType.getSimpleName();
             }
         }
     }
