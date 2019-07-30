@@ -15,7 +15,7 @@
             crossorigin="anonymous"></script>
 
     <!--custom css-->
-    <link rel="stylesheet" href="/css/Documents.css" type="text/css">
+    <link rel="stylesheet" href="/css/Document/Documents.css?ver=20190730-6" type="text/css">
 </head>
 <body>
     <!-- Header(Fixed) -->
@@ -31,11 +31,13 @@
     <div id="sidebar" >
         <div th:each="sidebarApiGroupInfo : ${sidebarApiGroupInfoList}" style="margin-bottom: 30px;">
             <h4 th:text="${sidebarApiGroupInfo.groupName}"></h4>
-            <ul>
-                <li th:each="sidebarApiInfo : ${sidebarApiGroupInfo.sidebarAPIInfoList}">
-                    <a style="color: white;" th:href="@{/documents/} + ${sidebarApiInfo.apiCode}" th:text="${sidebarApiInfo.apiNameKorVer}"></a>
-                </li>
-            </ul>
+            <div class="sidebar-api" th:each="sidebarApiInfo : ${sidebarApiGroupInfo.sidebarAPIInfoList}"
+                 th:id="${sidebarApiInfo.apiCode}">
+                <a th:href="@{/documents/} + ${sidebarApiInfo.apiCode}">
+                    <div id="apiKorName" th:text="${sidebarApiInfo.apiNameKorVer}"></div>
+                    <div id="apiDesc">Standard API for test</div>
+                </a>
+            </div>
         </div><br/>
     </div>
 

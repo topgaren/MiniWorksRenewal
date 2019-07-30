@@ -38,7 +38,7 @@ function makeTextArea(isInline, inList, name) {
         var divOuter = document.createElement('div');
         var iconDelete = document.createElement('img');
         iconDelete.className = 'icon icon-delete';
-        iconDelete.src = '/img/X.png';
+        iconDelete.src = '/img/Document/X.png';
         divOuter.append(div, iconDelete);
         iconDelete.setAttribute("onclick", "iconDeleteClickEventHandler()");
 
@@ -77,12 +77,12 @@ function makeFieldInput(field, allDTOInfoList) {
     var iconQuestion = document.createElement('img');
     iconQuestion.className = 'icon icon-question';
     iconQuestion.style.paddingLeft = '4px';
-    iconQuestion.src = '/img/Q.png';
+    iconQuestion.src = '/img/Document/Q.png';
 
     var iconDelete = document.createElement('img');
     iconDelete.className = 'icon icon-delete';
     iconDelete.style.paddingLeft = '4px';
-    iconDelete.src = '/img/X.png';
+    iconDelete.src = '/img/Document/X.png';
     iconDelete.setAttribute("onclick", "iconDeleteClickEventHandler()");
 
     if(field.list == false) {
@@ -152,7 +152,7 @@ function makeModelInput(model, allDTOInfoList, inList) {
 
     if(inList) {
         var iconDelete = document.createElement('img');
-        iconDelete.src = '/img/X.png';
+        iconDelete.src = '/img/Document/X.png';
         iconDelete.setAttribute("onclick", "iconDeleteClickEventHandler()");
         divOuter.append(iconDelete);
     }
@@ -219,7 +219,7 @@ function makeListInput(model, allDTOInfoList) {
     // Plus 버튼 생성
     var iconPlus = document.createElement('img');
     iconPlus.className = 'icon icon-plus';
-    iconPlus.src = '/img/Plus.png';
+    iconPlus.src = '/img/Document/Plus.png';
     divInner.append(iconPlus);
 
     if(model) {
